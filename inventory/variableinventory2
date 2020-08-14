@@ -1,0 +1,11 @@
+[group_a]
+webserver 	ansible_host=192.168.176.143
+
+[group_b]
+dbhost 		ansible_host=192.168.176.144
+
+[group_a:vars]
+ansible_user=vargrant
+
+[group_b:vars]
+ansible_user=root

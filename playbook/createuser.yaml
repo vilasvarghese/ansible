@@ -1,0 +1,6 @@
+---
+- hosts: servers
+  become: true
+  tasks:
+  - name: Create User
+    user: name=vilas password=vilas groups=root shell=/bin/bash

@@ -1,0 +1,6 @@
+--- Simple format. Playbook start
+- hosts: servers - group or servers reference to the inventory
+  become: true
+  tasks:
+  - name: Provide short description. for e.g.
+    copy: src=/home/vagrant/abc.txt dest=/opt/vagrant/

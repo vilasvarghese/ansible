@@ -1,0 +1,10 @@
+---
+- hosts: all
+  tasks:
+  - name: Ansible zip multiple files example
+  archive:
+   path:
+    - /home/vagrant/vilas1.txt
+    - /home/vagrant/vilas2.txt
+   dest: /home/vagrant/vilas.zip
+   format: zip

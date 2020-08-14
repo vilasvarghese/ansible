@@ -1,0 +1,6 @@
+---
+- hosts: servers
+  become: true
+  tasks:
+  - name: Create directory
+    file: path=/home/vagrant/vilas state=directory mode=775 owner=vagrant

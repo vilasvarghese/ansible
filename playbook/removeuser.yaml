@@ -1,0 +1,7 @@
+---
+- hosts: servers
+  become: true
+  tasks:
+  - name: Remove User
+    user:
+      name=vilas state=absent remove=yes force=yes    
