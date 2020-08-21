@@ -1,0 +1,4 @@
+#In case there was a dependency. Like execute mydependency role before executing current role.
+#---
+#dependencies:
+#  - mydependency

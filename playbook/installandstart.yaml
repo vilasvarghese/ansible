@@ -1,0 +1,8 @@
+---
+- hosts: servers
+  become: true
+  tasks:
+  - name: Install Package
+    yum: name=httpd state=present
+  - name: Start httpd service
+    service: name=httpd state=started

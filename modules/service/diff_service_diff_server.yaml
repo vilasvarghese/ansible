@@ -1,0 +1,12 @@
+hosts: host-one 
+tasks:
+  name: start httpd on host-one 
+  service:
+    name: httpd 
+	state: started
+hosts: host-two 
+tasks:
+  name: stop httpd on host-two 
+  service:
+    name: httpd 
+    state: stopped

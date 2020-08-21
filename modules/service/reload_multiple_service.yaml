@@ -1,0 +1,9 @@
+-hosts: all 
+  tasks:
+    - name: reload multiple services 
+	  service:
+        name: "{{ item }}" 
+		state: reloaded 
+		with_items:
+          - crond
+          - httpd

@@ -1,0 +1,10 @@
+hosts: host-one 
+tasks:
+  - name: start service crond 
+    service:
+      name: crond 
+      state: started 
+      enabled: true
+      register: service_output
+      debug: 
+        var=service_output.state

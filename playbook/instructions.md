@@ -32,4 +32,31 @@ cd ansible/playbook
 		ansible-playbook datetime.yaml
 		ansible-playbook datetimelog.yaml
 
-7. 	
+7. 	Install vim and git
+		ansible-playbook installvimgit.yaml
+		Go to the host and verify
+		ansible servers -m yum -a "name=git state=absent" -b
+		ansible servers -m yum -a "name=vim state=absent" -b
+
+8. 	Install and start apache
+		ansible-playbook installandstart.yaml
+		Both the instructions below would fail.
+		curl <ip:80>
+		curl <ip:8080>
+		ansible servers -m yum -a "name=httpd state=absent" -b
+-----------------------------------------------------------------
+cd orchestration
+-----------------------------------------------------------------	
+9. 	Install and start apache
+		ansible-playbook apache.yaml
+		Now the curl should succeed.
+		curl <ip:80>
+		
+
+		Go to the host 
+		systemctl status httpd
+		ansible servers -m shell -a "systemctl status httpd" -b
+		ansible servers -m yum -a "name=httpd state=absent" -b
+
+9. 	Download and install java
+		

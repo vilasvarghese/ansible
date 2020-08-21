@@ -1,0 +1,18 @@
+---
+- hosts: servers
+  strategy: debug
+  serial: 1
+  become: true
+  tasks:
+  - name: Date in Ansible
+    debug:
+      var=ansible_date_time.date
+  - name: Time in Ansible
+    debug:
+      var=ansible_date_time.time
+  - name: Ansible timestamp filename example
+    copy:
+      dest: "/home/vagrant/date_time.txt"
+      content: |
+        Vilas
+        {{ansible_date_time.date}}.log

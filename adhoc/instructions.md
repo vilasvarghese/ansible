@@ -104,9 +104,17 @@ Other useful commands
 Installing software using yum/apt commands.
 	ansible <group> -m yum -a "name=git state=present" --become
 	ansible servers -m yum -a "name=httpd state=latest" -b
+	
+	ansible <host as mentioned in inventory>  -m yum -a "name=httpd state=latest" -b
+	e.g.
+	ansible servers -m yum -a "name=httpd state=latest" -b
+	
 	name=any software which yum supports installation.
 	state
 		present: install/ensure installed.
 		absent: remove
+		installed: 
 		latest: upgrade to latest.
+		removed: 
+		got: 
 		Vilas: anyother version number: upgrade to that version.

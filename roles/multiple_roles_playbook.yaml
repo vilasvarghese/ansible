@@ -1,0 +1,10 @@
+---
+- hosts: wordpress_hosts
+  become: true
+  roles:
+    - apache
+    - php
+    - mysql
+    - wordpress
+  vars:
+    - doc_root: /var/www/example

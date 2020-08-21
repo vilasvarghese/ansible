@@ -101,5 +101,20 @@ ansible-inventory -i variableinventory2 --host dbhost
 	
 For more details on inventory refer: https://docs.ansible.com/ansible/latest/network/getting_started/first_inventory.html#add-variables-to-inventory
 
+
+group_vars
+----------
+Ansible uses combination of  
+	hosts file and  
+	group_vars directory 
+to pull variables per host group and run Ansible plays/tasks against hosts.
+
+	group_vars/all
+	group_vars/all is used to set variables that will be used for every host that Ansible is ran against.
+
+
+
+
+
 Using Patterns to Target Execution
 ----------------------------------

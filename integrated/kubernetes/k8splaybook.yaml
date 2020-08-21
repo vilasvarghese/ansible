@@ -1,0 +1,39 @@
+- name: Create a k8s namespace
+  k8s:
+    name: mynamespace
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Create a Service object from an inline definition
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: web
+        namespace: mynamespace
+        labels:
+          app: galaxy
+          service: web
+      spec:
+        selector:
+          app: galaxy
+          service: web
+        ports:
+        - protocol: TCP
+          targetPort: 8000
+          name: port-8000-tcp
+          port: 8000
+
+- name: Create a Service object by reading the definition from a file
+  k8s:
+    state: present
+    src: /mynamespace/service.yml
+
+# Passing the object definition from a file
+- name: Create a Deployment by reading the definition from a local file
+  k8s:
+    state: present
+    src: /mynamespace/deployment.yml

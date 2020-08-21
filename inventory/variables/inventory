@@ -1,0 +1,12 @@
+[webservers]
+web-host0[1:3].servers.com
+#web-host01.servers.com
+#web-host02.servers.com
+#web-host03.servers.com
+
+
+[dbservers]
+db-host0[1:3].servers.com
+#db-host01.servers.com
+#db-host02.servers.com
+#db-host03.servers.com

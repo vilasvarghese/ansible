@@ -1,0 +1,6 @@
+- hosts: all 
+  tasks:
+  - name: stopping a service 
+    service:
+      name: httpd 
+	  state: stopped
