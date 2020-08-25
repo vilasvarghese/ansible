@@ -1,0 +1,15 @@
+---
+- name: Ensure latest {{ openjdk_package_name }} is installed
+  yum:
+    name: "{{ openjdk_package_name }}"
+    state: latest
+    update_cache: yes
+  tags: [ install, yum ]
+
+- name: Ensure java profile
+  template:
+    src: java.sh.j2
+    dest: /etc/profile.d/java.sh
+    mode: 0644
+  tags: config
+

@@ -1,0 +1,6 @@
+- name: Example Playbook
+  hosts: servers
+  roles:
+    - name: Install openjdk
+      role: openjdk
+      openjdk_version: 1.8.0

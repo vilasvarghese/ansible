@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: aws1 
   become: true
   roles:
     - apache
