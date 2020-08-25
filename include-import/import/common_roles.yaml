@@ -1,0 +1,10 @@
+---
+# ./common_roles.yaml
+- name: install common roles
+  hosts: "{{ server_type }}"
+  roles:
+    - users
+    - ntp
+    - python
+    - git
+    - aws-cli

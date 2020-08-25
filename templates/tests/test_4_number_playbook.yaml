@@ -1,0 +1,44 @@
+ 
+## Create playbook
+vi myplaybook.yml
+----------------------
+- hosts: localhost
+  gather_facts: false
+  vars:
+    num1: 15
+    num2: 30
+  tasks:
+    - debug:
+        msg: "num1:{{ num1 }} is divisible by 5"
+      when: num1 is divisibleby 5
+    - debug:
+        msg: "num1:{{ num1 }} is equal to 15"
+      when: num1 is eq 15
+    - debug:
+        msg: "num1:{{ num1 }} is not equal to {{ num2 }}"
+      when: num1 is ne num2
+    - debug:
+        msg: "num1:{{ num1 }} is grater than 10"
+      when: num1 is gt 10
+    - debug:
+        msg: "num1:{{ num1 }} is grater than equal to 15"
+      when: num1 is ge 15
+    - debug:
+        msg: "num1:{{ num1 }} is less than 45"
+      when: num1 is lt 45
+    - debug:
+        msg: "num1:{{ num1 }} is less than equal to 15"
+      when: num1 is le 15
+    - debug:
+        msg: "num1:{{ num1 }} is a odd number"
+      when: num1 is odd
+    - debug:
+        msg: "num2:{{ num2 }} is a even number"
+      when: num2 is even
+    - debug:
+        msg: "variable num2 is of number type with value = {{ num2 }}"
+      when: num2 is number
+
+ 
+##  Execute the playbook
+ansible-playbook myplaybook.yml

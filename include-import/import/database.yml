@@ -1,0 +1,7 @@
+---
+# ./database.yml
+- import_playbook: common_roles.yml
+- name: configure database servers
+  hosts: database
+  roles:
+    - postgres

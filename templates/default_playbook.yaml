@@ -1,0 +1,4 @@
+- name: install default variables on managed host
+  template:
+    src: default_variables.j2
+    dest: $HOME/default_variables.j2

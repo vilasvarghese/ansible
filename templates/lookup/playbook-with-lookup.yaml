@@ -1,0 +1,11 @@
+--- 
+ - name: Ansible Lookup examples
+   hosts: app
+   become: true
+   tasks: 
+    # Playbook with lookup
+    - name: "Copy the public Key using Lookup"
+      authorized_key:
+        user: vagrant
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

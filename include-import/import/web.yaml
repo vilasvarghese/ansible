@@ -1,0 +1,8 @@
+---
+# ./web.yaml
+- import_playbook: common_roles.yml
+- name: configure web servers
+  hosts: web
+  roles:
+    - nginx
+    - my_site

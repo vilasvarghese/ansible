@@ -1,0 +1,6 @@
+---
+# ./database.yaml
+- name: configure database servers
+  hosts: "{{ env }}_database"
+  roles:
+    - postgres

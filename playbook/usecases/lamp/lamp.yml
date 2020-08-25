@@ -1,0 +1,100 @@
+--- 
+
+- name: Install LAMP stack
+  hosts: web,database
+  remote_user: vagrant
+  become: yes
+  
+  vars:
+    root_db_user: root
+    root_db_password: mysql
+    dbname: classicmodels
+    db_host: "172.42.42.102"
+
+
+  tasks:
+    - name: Install Apache Webserver
+      when: inventory_hostname in groups['web']
+      yum: 
+        name: httpd
+        state: latest
+
+    - name: Start Apache Webserver
+      when: inventory_hostname in groups['web']
+      service: 
+        name:  httpd 
+        state: started 
+        
+    - name: Mysql repo download
+        get_url:
+            url: "http://repo.mysql.com/mysql-community-release-el7-7.noarch.rpm"
+            dest: /tmp
+            force: yes
+
+    - name: Install MySQL community repo
+        command: /usr/bin/rpm -ivh /tmp/mysql-community-release-el7-7.noarch.rpm
+        
+
+    - name: Install DB
+        when: inventory_hostname in groups['database']
+        yum: 
+            name: mysql-server
+            state: present
+
+    - name: Install Mysql Python module
+        when: inventory_hostname in groups['database']
+        yum:
+            name: MySQL-python
+            state: present
+
+    - name: Start Mysql service and enable it
+        when: inventory_hostname in groups['database']
+        service:
+            name: mysqld
+            state: started
+            enabled: yes 
+            
+    
+    - name: Creating database
+        when: inventory_hostname in groups['database']
+        mysql_db: 
+            name: "{{dbname}}" 
+            state: present
+            login_host: "{{ db_host}}"
+            login_user: "{{ root_db_user }}"
+            login_password: "{{ root_db_password }}"
+            login_unix_socket: /var/lib/mysql/mysql.sock 
+
+    - name: Create db User
+        when: inventory_hostname in groups['database']
+        mysql_user: 
+            name: "{{root_db_user}}"
+            password: "{{root_db_password}}"
+            priv: "*.*:ALL"
+            host: "{{ db_host}}" 
+            state: present 
+            login_user: "{{ root_db_user }}" 
+            login_password: "{{root_db_password}}"
+       
+
+    - name: Copy the SQL file
+        when: inventory_hostname in groups['database']
+        copy: src=./data.sql dest=/tmp/data.sql
+
+
+    - name: Run the script to populate the tables
+        when: inventory_hostname in groups['database']
+        shell: mysql -u root -pmysql classicmodels < /tmp/data.sql
+    
+
+    - name: Copy the index PHP file 
+      when: inventory_hostname in groups['web']
+      copy: src=./index.php dest=/var/www/html/
+        
+    - name: Restart the Apache Webserver 
+      when: inventory_hostname in groups['web']
+      service:
+        name:  httpd
+        state: restarted
+
+...

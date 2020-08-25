@@ -1,0 +1,25 @@
+---
+- name: Install software
+  become: yes
+  hosts: all
+  vars:
+    packages:
+      - name: neofetch
+        required: True
+
+      - name: cpu-checker
+        required: True
+
+      - name: screenfetch
+        required: False
+  tasks:
+    - name: Install "{{ item.name }}" on Ubuntu
+      apt:
+        name: "{{ item.name }}"
+        state: present
+
+      when:
+        - item.required == True
+        - ansible_facts['distribution'] == "Ubuntu"
+
+      loop: "{{ packages }}"

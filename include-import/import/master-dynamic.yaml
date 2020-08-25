@@ -1,0 +1,6 @@
+---
+# ./master-dynamic.yaml
+- import_playbook: common_roles.yaml
+- import_playbook: staging_roles.yaml
+  when: env == 'staging'
+- import_playbook: "{{ server_type }}.yaml"

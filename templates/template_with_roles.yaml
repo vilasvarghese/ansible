@@ -1,0 +1,7 @@
+- name: template with ownership and octal mode
+  template:
+    src: my_app.conf.j2
+    dest: $HOME/my_app.conf
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0644

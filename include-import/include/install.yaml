@@ -1,0 +1,10 @@
+---
+# ./roles/my_role/tasks/install.yaml
+- name: install dependencies
+  apt:
+    name: "{{ item }}"
+    state: present
+  become: true
+  loop:
+    - nginx
+    - php7.2

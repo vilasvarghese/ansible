@@ -1,0 +1,11 @@
+--- 
+ - name: Ansible Lookup examples
+   hosts: app
+   become: true
+   tasks: 
+    # Secret is hardcoded here
+    - name: "Copy the public Key Using the Key directly within Playbook"
+      authorized_key:
+        user: vagrant
+        state: present
+        key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCmdlM0QV6HxZQ7iqXiboefzMHR/cKX+qlTezRiExW6jmwNaD1a9F3KlMaoi4eTKGtPbM9eTygcBjJOGZhEjZITuNat7teK/evvbiszrT3ORUvotnv8yjVC02CGFsK6fPs10J0rgITPdsnd+oq9WcJ/2rM5wHJPoSfhUzhgDB7mdOIeVM+mG89j+OPV377HRTyC5O9Ja9nX9J5ElHXFWu2CTLMjgYxZ16FLpIdlrL4I12mCucZ8jGaZp8frarwyilHsuUt2hQFi3XEmT3ACKiAtE0kBhclr2gtc2wNoVJVoWB sarav@Saravs-MacBook-Pro.local"

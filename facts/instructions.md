@@ -8,7 +8,7 @@
 		shell
 		perl 
 		any other languages.
-	Output of the fact should json
+	Output of the fact should be json
 
 3. Give execution permission on the file.
 
@@ -47,6 +47,7 @@ EOF
 	a. ansible all -m file -a "path=/etc/ansible/facts.d state=directory" -b
 	
 16. cat /etc/ansible/facts.d/myversion.fact 
-17. ansible all -m copy -a "src=/etc/ansible/facts.d/myversion dest=/etc/ansible/facts.d/myversion.fact mode='0755' -b 
+17. ansible all -m copy -a "src=/etc/ansible/facts.d/myversion.fact dest=/etc/ansible/facts.d/myversion.fact mode='0755' -b 
 
 18. Collect the git and httpd version
+	ansible all -m setup | egrep -i "(Git_Version|httpd)"

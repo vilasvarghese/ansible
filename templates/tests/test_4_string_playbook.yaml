@@ -1,0 +1,26 @@
+- hosts: localhost
+  gather_facts: false
+  vars:
+    str1: "Welcome to ansible training"
+    str2: "Master this technology and your career is safe"
+    str3: "VILAS"
+  tasks:
+    - debug:
+        msg: "{{ str1 }} contains 'ansible'"
+      when: str1 is match(".*ansible    ")
+    - debug:
+        msg: "{{ str2 }} contains 'career'"
+      when: str2 is search(".*career.*")
+    - debug:
+        msg: "{{ str2 }} contains 'technology'"
+      when: str2 is regex("\w+/technology")
+    - debug:
+        msg: "{{ str1 | quote }} is in lowercase"   #Filter
+      when: str1 is lower
+    - debug:
+        msg: "{{ str3 | quote }} is in Uppercase"
+      when: str3 is upper
+    - debug:
+        msg: "variable str3 is of string type with value = {{ str3 }}"
+      when: str3 is string
+

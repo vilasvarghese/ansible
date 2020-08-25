@@ -1,0 +1,15 @@
+- name: added in 2.4, previously you used 'include'
+  import_tasks: redhat.yml
+  when: ansible_facts['os_family']|lower == 'redhat'
+- import_tasks: debian.yml
+  when: ansible_facts['os_family']|lower == 'debian'
+
+# roles/example/tasks/redhat.yml
+- yum:
+    name: "httpd"
+    state: present
+
+# roles/example/tasks/debian.yml
+- apt:
+    name: "apache2"
+    state: present

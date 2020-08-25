@@ -1,0 +1,30 @@
+#######################
+## Testing sequences ##
+#######################
+ 
+## Create playbook
+vi myplaybook.yml
+----------------------
+- hosts: localhost
+  gather_facts: false
+  vars:
+    lst1: [0,1,2,3,4,5,6,7,8,9]
+    lst2: [2,4,6,8]
+  tasks:
+    - debug:
+        msg: "{{ lst1 }} includes {{ lst2 }}"
+      when: lst1 is superset(lst2)
+    - debug:
+        msg: "{{ lst2 }} is included in {{ lst1 }}"
+      when: lst2 is subset(lst1)
+    - debug:
+        msg: "{{ lst1 }} includes 8"
+      when: 8 is in(lst1)
+    - debug:
+        msg: "variable lst2 is of sequence type with value = {{ lst2 }}"
+      when: lst2 is sequence
+----------------------
+:wq
+ 
+##  Execute the playbook
+ansible-playbook myplaybook.yml

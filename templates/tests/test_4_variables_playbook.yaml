@@ -1,0 +1,11 @@
+- hosts: localhost
+  gather_facts: false
+  vars:
+    str1: "cloudaffaire"
+  tasks:
+    - debug:
+        msg: "variable 'str1' is defined with value = {{ str1 }}"
+      when: str1 is defined #can be used with any type of variables
+    - debug:
+        msg: "variable 'str2' is undefined"
+      when: str2 is undefined #can be used with any type of variables

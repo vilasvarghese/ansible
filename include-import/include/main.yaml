@@ -1,0 +1,6 @@
+---
+# ./roles/my_role/tasks/main.yml
+
+- include_tasks: install.yml
+
+- include_tasks: configure.yml

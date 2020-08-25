@@ -1,0 +1,10 @@
+---
+- hosts: all
+  tasks:
+  - name: Ansible loop with index example
+    debug:
+      msg: "echo loop index at {{ item.0 }} and value at {{item.1}}"
+    with_indexed_items:
+      - "hello1"
+      - "hello2"
+      - "hello3"

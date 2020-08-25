@@ -28,6 +28,7 @@
 		In the host_vars folder (following Ansible best practices)
 	
 	In the inventory file
+	----------------------
 	Setting slow: true for the host webserver
 
 	- host: webserver

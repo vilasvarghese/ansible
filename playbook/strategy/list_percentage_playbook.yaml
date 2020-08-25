@@ -1,0 +1,13 @@
+---
+- name: test play
+  hosts: webservers
+  serial:
+    - "10%"
+    - "20%"
+    - "100%"
+
+  tasks:
+    - name: first task
+      command: hostname
+    - name: second task
+      command: hostname

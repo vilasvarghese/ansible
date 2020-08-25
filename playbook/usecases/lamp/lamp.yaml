@@ -1,0 +1,78 @@
+--- 
+
+- name: Install LAMP stack
+  hosts: web,db
+  remote_user: vagrant
+  become: yes
+
+
+  tasks:
+    - name: Install Apache Webserver
+      when: inventory_hostname in groups['web']
+      yum: 
+        name: httpd
+        state: latest
+
+    - name: Start Apache Webserver
+      when: inventory_hostname in groups['web']
+      service: 
+        name:  httpd 
+        state: started 
+
+    - name: Install MYSQL server
+      when: inventory_hostname in groups['database']
+      yum:
+        name: 
+        - mariadb-server
+        - mariadb-devel
+        - mariadb-connector-odbc
+        - mariadb-server-utils
+        - python3-PyMySQL
+        - php
+        state: latest
+
+    - name: Start the MYSQL as service
+      when: inventory_hostname in groups['database']
+      service:
+        name: mariadb
+        state: started
+
+    - name: Set the Root Password for mariadb
+      when: inventory_hostname in groups['database']
+      mysql_user:
+        name: root
+        host: db
+        password: mysql
+        login_user: root
+        check-implicit_admin: yes
+        priv: "*.*:ALL,GRANT"
+
+    - name: Create schema and populate the table scripts
+      when: inventory_hostname in groups['database']
+      mysql_db: 
+        name:  inventory 
+        state: present
+        login_user: root
+        login_password: mysql
+    
+    - name: Copy the SQL file
+      when: inventory_hostname in groups['database']
+      copy:
+        src:./data.sql
+        dest:/tmp/inventory.sql
+
+    - name: Run the script to populate the tables
+      when: inventory_hostname in groups['database']
+      shell: mysql -u root -pmysql classicmodels < /tmp/data.sql
+
+    - name: Copy the index PHP file 
+      when: inventory_hostname in groups['web']
+      copy: src:./index.php dest:/var/www/html/
+        
+    - name: Restart the Apache Webserver 
+      when: inventory_hostname in groups['web']
+      service:
+        name:  httpd
+        state: restarted
+
+...

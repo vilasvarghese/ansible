@@ -1,0 +1,9 @@
+# ./web-staging.yaml
+- import_playbook: common_roles.yaml
+- import_playbook: staging_roles.yaml
+  when: env == 'staging'
+- name: configure web servers
+  hosts: "{{ env }}_web"
+  roles:
+    - nginx
+    - my_site

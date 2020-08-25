@@ -70,3 +70,53 @@ https://ansible-tips-and-tricks.readthedocs.io/en/latest/ansible/install/
 		$ pip install --user ansible
 
 	Create ansible.cfg, hosts etc from the github.
+	
+	
+	ansible -m ping all
+	It fails
+	We need to setup two more things
+	
+	1. Setup user
+		e.g. root@
+	2. Setup password less access 
+		using ssh keys.
+		
+Setup user
+----------
+	sudo mkdir /etc/ansible/group_vars
+	sudo vi /etc/ansible/group_vars/servers
+
+-----------------------------------
+ansible_ssh_user: vagrant	
+-----------------------------------
+#--- is critical don't ignore that.
+
+Now for the group servers, ansible will try to connect using vagrant
+
+Setup password less access
+--------------------------
+----------------------------------------------------
+On the controller generate keys
+	ssh-keygen -t rsa -C root@192.168.176.142
+	
+	cd /root/.ssh
+	ls -a
+	
+	ssh-copy-id vagrant@192.168.176.143
+	ssh-copy-id vagrant@192.168.176.144
+	
+
+Set the following in ansible.cfg file
+------------------------------------------------------------------------
+[defaults]
+inventory = ./hosts-dev
+remote_user = <SSH_USERNAME>
+private_key_file = ~/.ssh/id_rsa
+host_key_checking = False
+------------------------------------------------------------------------	
+	
+	sudo chmod 444 ~/.ssh/id_rsa
+	
+Additional
+----------
+https://docs.ansible.com/ansible/latest/user_guide/connection_details.html

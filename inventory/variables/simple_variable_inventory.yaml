@@ -1,0 +1,5 @@
+[nodes]  
+node01.baremetal VENDOR_MODEL="Dell R510"  
+node02.baremetal VENDOR_MODEL="Dell R510"  
+node03.baremetal VENDOR_MODEL="Dell R510"  
+node0x.baremetal VENDOR_MODEL="Dell R420"

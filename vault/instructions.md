@@ -1,0 +1,328 @@
+Steps to use Ansible Vault
+--------------------------
+	Setting the Ansible Vault Editor
+	
+	Few Vault’s commands should be opened in a editor 
+		helps to manipulate the contents of an encrypted file. 
+	So before using the ansible-vault command, 
+		better specify your preferred text editor.
+		Default to vi.
+		
+	Set EDITOR environment variable to modify the default. 
+		EDITOR=nano 
+		
+	To persist	
+		nano ~/.bashrc
+			export EDITOR=nano
+			
+	Confirm the EDITOR		
+		echo $EDITOR
+
+
+	Manage Sensitive Files with ansible-vault
+	-----------------------------------------
+	ansible-vault 
+		main 
+		manage encrypted content
+		can do
+			1. initial encryption of files 
+			2. view, 
+			3. edit, 
+			4. decrypt
+
+	1. Encrypt Data
+	---------------
+	For e.g., create an encrypted YAML file called vault.yml to store sensitive variables:
+		
+		a) ansible-vault create vault.yml
+	
+			You will be prompted to enter and confirm a password:
+
+			Output
+			New Vault password: 
+			Confirm New Vault password:
+		
+		b) Once password is confirmed, 
+			Ansible will immediately open an editing window where you can enter your desired contents.
+
+		c) To test the encryption function, enter some test text:
+			vault.yml
+			Secret information
+
+			Once we close the file Ansible will encrypt the contents. 
+		d) Verif the content 
+				cat vault.yml
+
+			Output
+			$ANSIBLE_VAULT;<encrypted content>
+		
+			Encrypted content includes
+				header information
+					Ansible uses it to know how to handle the file
+						followed by the encrypted contents generally in numbers, 
+						
+						
+						
+	2) Encrypt Existing Files
+	-------------------------
+	
+		a) Create a file which needs to be encrypted.
+			echo 'This is ansible training' > vault-encrypt-file.txt
+		
+			
+		b) Encrypt any file 
+			ansible-vault encrypt vault-encrypt-file.txt
+		
+		Again, need to provide and confirm a password
+
+			Output
+			New Vault password: 
+			Confirm New Vault password:
+			Encryption successful
+
+		c) Verify if the file was encrypted.
+			cat vault-encrypt-file.txt
+			
+			Output
+			$ANSIBLE_VAULT;<<encrypted file>>
+			Very similar to the earlier encryption.
+
+	3) Viewing Encrypted Files
+	--------------------------
+	
+	Sometimes, 
+		we need to reference the contents of a vault-encrypted file 
+			without needing to edit it 
+			write it to the filesystem unencrypted. 
+		By default, this means that the contents are displayed in the terminal.
+	
+		N.B: We can see the decrypted data while maintaining encrypted file.
+	
+	a) ansible-vault view vault.yml
+		
+	b) You will be asked for the file’s password. After entering it successfully, the contents will be displayed:
+		Output
+		Vault password:
+		Secret information
+	
+		The password prompt is mixed into the output of file contents. 
+		Keep this in mind when using ansible-vault view in automated processes.
+
+	4) Editing Encrypted Files
+	--------------------------
+	
+		a) To edit an encrypted file (vault.yml)
+			ansible-vault edit vault.yml
+			
+		b) You will be prompted for the file’s password. 
+			After entering it, Ansible will open the file an editing window, where you can make any necessary changes.
+
+		c) Make changes and save, 
+			the new contents will be encrypted using the file’s encryption password 
+			written back to disk.
+
+	5) Manually Decrypting Encrypted Files
+	--------------------------------------	
+		To decrypt a vault encrypted file, use the ansible-vault decrypt command.
+			N.B: The encrypted file would decrypted.
+					Encrypted file would be lost.
+			
+			Note: There are chances of accidentally committing sensitive data to your project repository
+				ansible-vault decrypt command is only suggested when 
+					Remove encryption from a file permanently. 
+					For just viewing or editing a vault encrypted file, 
+						use ansible-vault view or ansible-vault edit commands, respectively.
+
+		a) ansible-vault decrypt vault.yml
+	
+		b) You will be prompted for the encryption password for the file. 
+			Enter password, the file will be decrypted:
+
+			Output
+			Vault password:
+			Decryption successful
+
+
+		c) Verify the file 
+			cat vault.yml
+				Output
+				<data>
+			Your file is now unencrypted (or decrypted) on disk. 
+			Better remove any sensitive information or re-encrypt the file when you are finished.
+			
+			
+			
+	Changing the Password of Encrypted Files
+	----------------------------------------
+	For changing the password of an encrypted file
+	
+		a) ansible-vault rekey encrypt_me.txt
+		
+		b) You will be prompted with the file’s current password:
+
+			Output
+			Vault password:
+
+		c) After entering it, you will be asked to select and confirm a new vault password:
+			
+			Output
+			Vault password:
+			New Vault password:
+			Confirm New Vault password:
+
+		d) Success message
+		
+			Output
+			Rekey successful
+			The file should now be accessible using the new password. The old password will no longer work.
+
+	Running Ansible with Vault-Encrypted Files
+	------------------------------------------
+	After you’ve encrypted your sensitive information with Vault
+		you can begin using the files with Ansible’s conventional tooling. 
+	The ansible and ansible-playbook commands both know how to decrypt vault-protected files 
+		given the correct password. 
+	There are a few different ways of providing passwords to these commands depending on your needs.
+
+		
+		a) To follow along, you will need a vault-encrypted file. You can create one by typing:
+			ansible-vault create secret_key
+
+		b) Select and confirm a password. Fill in whatever dummy contents you want:
+			secret_key
+			confidential data
+			Save and close the file.
+
+		c) We can also create a temporary hosts file as an inventory:
+			vi hosts
+
+		d) Add Ansible localhost to it. To prepare for a later step, we will place it in the [database] group:
+
+------------------------------------------------------------------
+[database]
+localhost ansible_connection=local
+------------------------------------------------------------------
+			Save and close the file when you are finished.
+
+-------------------------------------------------------------------------------------------	
+	Better skip this step
+		e) Next, update ansible.cfg file 
+
+			vi /etc/ansible/ansible.cfg		
+				#Assuming there is no ~/ansible.cfg
+			For now, just add a [defaults] section and point Ansible to the inventory we just created:
+
+			ansible.cfg
+			[defaults]
+			inventory = ./hosts
+		Save and close.
+-------------------------------------------------------------------------------------------	
+	
+	Using an Interactive Prompt
+	---------------------------
+		One of the(easy) way of decrypting content at runtime is to have 
+			Ansible prompt you for the appropriate credentials. 
+		This can be done by adding --ask-vault-pass to any ansible or ansible-playbook command. 
+		Ansible will prompt you for a password which it will use to try to decrypt any vault-protected content it finds.
+
+		For example, if we needed to copy the contents of a vault-encrypted file to a host, 
+		we could do so with the copy module and the --ask-vault-pass flag. 
+		If the file actually contains sensitive data, 
+			you will most likely want to lock down access on the remote host with 
+			permission and ownership restrictions.
+
+	ansible --ask-vault-pass -bK -i <inventory> -m copy -a 'src=secret_key dest=/tmp/secret_key mode=0600 owner=root group=root' localhost
+
+		Our task specifies that the file’s ownership should be changed to root, 
+			so administrative privileges are required. 
+			The -bK flag tells Ansible to prompt for the sudo password for the target host, 
+				so you will be asked for your sudo password. 
+			After that you will then be asked for the Vault password:
+
+			Output
+			SUDO password:
+			Vault password:
+
+			When the password is provided, Ansible will attempt to execute the task, 
+			using the Vault password for any encrypted files it finds. 
+			Keep in mind that all files referenced during execution must use the same password:
+
+			Output
+			localhost | SUCCESS => {
+				"changed": true, 
+				"checksum": "7a2eb5528c44877da9b0250710cba321bc6dac2d", 
+				"dest": "/tmp/secret_key", 
+				"gid": 0, 
+				"group": "root", 
+				"md5sum": "270ac7da333dd1db7d5f7d8307bd6b41", 
+				"mode": "0600", 
+				"owner": "root", 
+				"size": 18, 
+				"src": "/home/sammy/.ansible/tmp/ansible-tmp-1480978964.81-196645606972905/source", 
+				"state": "file", 
+				"uid": 0
+			}
+
+		Prompting for a password is secure, 
+			but can be tedious, 
+			especially on repeated runs, 
+			and also hinders automation. 
+		
+		Alternatives
+		
+	Using Ansible Vault with a Password File
+	----------------------------------------
+	If you do not wish to type in the Vault password each time you execute a task, 
+		you can add your Vault password to a file and 
+		reference the file during execution.
+
+	a) For e.g., you could put your password in a .vault_pass file like this:
+		echo 'my_vault_password' > .vault_pass
+
+	b) If you are using version control, make sure to add the password file to your version control software’s ignore file to avoid accidentally committing it:
+		echo '.vault_pass' >> .gitignore
+
+	c) Now, you can reference the file instead. 
+		The --vault-password-file flag is available on the command line. 
+		
+		We could complete the same task from the last section by typing:
+		ansible --vault-password-file=.vault_pass -i <inventory> -bK -m copy -a 'src=secret_key dest=/tmp/secret_key mode=0600 owner=root group=root' localhost
+		
+		You will not be prompted for the Vault password this time.
+
+
+	Reading the Password File Automatically
+	---------------------------------------
+	a) To avoid having to provide a flag at all, 
+		you can set the ANSIBLE_VAULT_PASSWORD_FILE environment variable with the path to the password file:
+		
+			export ANSIBLE_VAULT_PASSWORD_FILE=./.vault_pass
+
+	b) You should now be able to execute the command without the --vault-password-file flag for the current session:
+		ansible -bK -m copy -a 'src=secret_key dest=/tmp/secret_key mode=0600 owner=root group=root' localhost
+
+	However this configuration can be lost when you restart the box.
+	
+	c) To make this configuration persistent.
+		edit your ansible.cfg file.
+
+		Open the local ansible.cfg file we created earlier:
+
+			vi ansible.cfg
+			In the [defaults] section, 
+				set the vault_password_file setting. 
+					Point to the location of your password file. 
+						Both relative or absolute path are supported:
+						Choose based on what works the best.
+----------------------------------------------------------------
+ansible.cfg
+[defaults]
+. . .
+vault_password_file = ./.vault_pass
+----------------------------------------------------------------
+
+Now, when you run commands that require decryption, 
+	you will no longer be prompted for the vault password. 
+	As a bonus, ansible-vault will not only use the password in the file to decrypt any files, but it will apply the password when creating new files with ansible-vault create and ansible-vault encrypt.	
+		
+		

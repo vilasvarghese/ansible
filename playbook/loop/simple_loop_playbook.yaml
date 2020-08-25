@@ -1,0 +1,10 @@
+- hosts: all
+  tasks:
+  - name: Ansible Loop example
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items:
+       - python3
+       - ca-certificates
+       - git
