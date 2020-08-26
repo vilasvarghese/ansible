@@ -4,3 +4,4 @@
   tasks:
   - name: Install Package
     yum: name=vim,git state=latest
+    #User needs to be root because this require root privilege to install

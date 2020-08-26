@@ -6,6 +6,9 @@ Installing Ansible on RHEL/CentOS
 	RPMs for RHEL 7 and RHEL 8 are available from the Ansible Engine repository.
 	Enable the Ansible Engine repository for RHEL 8
 		$ sudo subscription-manager repos --enable ansible-2.9-for-rhel-8-x86_64-rpms
+		or 
+	https://developers.redhat.com/blog/2016/09/02/how-to-install-and-configure-ansible-on-rhel/
+		rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
 	Enable the Ansible Engine repository for RHEL 7, run the following command:
 		$ sudo subscription-manager repos --enable rhel-7-server-ansible-2.9-rpms
@@ -30,6 +33,9 @@ Installing Ansible on RHEL/CentOS
 Detailed reference:	https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#managed-node-requirements
 Other good references
 https://ansible-tips-and-tricks.readthedocs.io/en/latest/ansible/install/
+
+
+		yum -y install ansible
 
 
 	2. Installing Ansible with pip

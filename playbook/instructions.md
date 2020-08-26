@@ -4,11 +4,17 @@ Refer sampleformat.yaml
 git clone https://github.com/vilasvarghese/ansible.git
 cd ansible/playbook
 
+----------------------------------------------------------------------------------------------------------------------------
+N.B: Default all the below instructions would execute against /etc/ansible/hosts
+You can modify it by adding -i <inventory> while executing the command.
+
 1. 	createfile.yaml is a simple playbook which would create a file in /home directory.
 
 	Syntax check
 		ansible-playbook <playbook.yml> --syntax-check
-
+			Success Output: filename
+			Failure Output: error message with description
+		
 	List hosts
 		ansible-playbook <playbook.yml> --list-hosts
 	
