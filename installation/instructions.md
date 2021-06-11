@@ -122,7 +122,10 @@ host_key_checking = False
 ------------------------------------------------------------------------	
 	
 	sudo chmod 444 ~/.ssh/id_rsa
-	
+
+-------------------------------------------
+For aws copy 	
+-------------------------------------------	
 Additional
 ----------
 https://docs.ansible.com/ansible/latest/user_guide/connection_details.html

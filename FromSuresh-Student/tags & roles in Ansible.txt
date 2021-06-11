@@ -1,0 +1,76 @@
+[vagrant@controlmachine playbooks]$ cat tags_example.yml
+---
+- hosts: centos_host2
+  become: yes
+
+  tasks:
+  - name: "starting the server"
+    service: name=httpd state=started
+    when: ansible_distribution == "CentOS"
+    tags: start_services
+
+  - name: "stopping the server"
+    service: name=httpd state=stopped
+    when: ansible_distribution == "CentOS"
+    tags: stop_services
+
+[vagrant@controlmachine playbooks]$ ansible-playbook tags_example.yml --tags="start_services"
+
+=========================================================
+Directory structure:
+======================
+Project1
+ - roles
+    - nginx
+	    - tasks - main.yml
+ 
+ - ansible.cfg
+ - inventory_dev
+ - playbook.yml
+ 
+ >ansible-playbook playbook.yml
+
+Note: Project1 is the main directory. Inside that create a roles sub directory and inside that nginx  and inside that tasks directory.
+and ansible.cfg,hosts file (inventory_dev),playbook.yml are at the level of roles directory.
+==========================================================
+
+[vagrant@controlmachine tasks]$ cat main.yml
+- name: epel
+  yum:
+    name: epel-release
+    state: present
+  tags: [nginx]
+
+- name: nginx
+  yum:
+    name: nginx
+    state: present
+  tags: [nginx]
+
+- name: enable nginx
+  service:
+    name: nginx
+    state: started
+  tags: [nginx,status]
+===================================
+[vagrant@controlmachine project1]$ cat ansible.cfg
+[defaults]
+host_key_checking=false
+inventory=inventory_dev
+
+===================================
+[vagrant@controlmachine project1]$ cat inventory_dev
+ubuntu_host ansible_ssh_host=192.168.33.14
+centos_host ansible_ssh_host=192.168.33.16
+
+===================================
+[vagrant@controlmachine project1]$ cat playbook.yml
+---
+- hosts: all
+  become: true
+  roles:
+   - nginx
+  vars:
+     nginx_port: 7070
+
+====================================

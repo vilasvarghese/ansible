@@ -89,7 +89,8 @@ ansible [-i <inventory>] host:group1:group2 -m module [-a arguments]
 		
 	b. using yum
 		ansible servers -m yum -a "name=nginx state=present" --become
-	
+		If sudo privileges are asked, then use 
+		ansible servers -m yum -a "name=nginx state=present" -b -kK
 	
 12. Start nginx 
 	ansible servers -m service -a 'name=nginx state=started enabled=yes' --become

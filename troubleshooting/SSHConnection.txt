@@ -1,0 +1,68 @@
+Question
+===========
+
+	I'm trying to connect to remote host through SSH and a Private Key to run a simple test to start working with Ansible to generate my inventories:
+
+	ansible -m ping -i hosts test1 -vvv
+
+
+
+	Hosts file have a simple configuration
+
+	[test]
+
+
+
+
+	test1 ansible_host=remote_host ansible_user=remote_user ansible_private_key_file=/var/jenkins_home/ansible/id_rsa
+
+
+	SSH is working fine to connect to remote server with this key:
+
+	jenkins@0bde7f6019a2:~/ansible$ ssh -i id_rsa remote_user@remote_host
+
+	Enter passphrase for key 'id_rsa': 
+
+	Last login: Fri Jul  5 12:10:51 2019 from jenkins.jenkins_net
+
+
+	While trying to do the connection with ansible seems to have problems I can't find or troubleshoot, the error indicates:
+
+	test1 | UNREACHABLE! => {
+
+		"changed": false, 
+
+		"msg": "Failed to connect to the host via ssh: Control socket connect(/var/jenkins_home/.ansible/cp/45a4bb8b49): Connection refused\r\nFailed to connect to new control master", 
+
+		"unreachable": true
+
+	}
+	
+Solution
+===========
+	[ssh_connection]
+	ssh_args = -C -o ControlMaster=auto -o ControlPersist=60s
+	control_path = /dev/shm/cp%%h-%%p-%%r
+	
+	
+	
+-----------------------------
+
+
+PFB important material for your reference.
+Reference Mock session recording1:  https://edureka.wistia.com/medias/nnetjof4et  
+Reference Mock session recording2: https://edureka.wistia.com/medias/aneyjx8iw5    
+(Recommended) Train the Trainer session: https://edureka.wistia.com/medias/k95z16x4lt 
+Pre-Class: https://edureka.wistia.com/medias/l0yjllgaez
+In addition, PFA slides/documents and PFB the quality check-list for your reference. 
+	
+	
+	
+	Whatsapp
+	Workplace
+	
+	Students would be getting aws instance?
+	Support contact number?
+	EDUREKA LEARNERS, NEED SOME HELP? REACH US AT: 
+		Phone (India): 080-474 74500 Phone 
+		(US & ROW): +1 877 959 4010 (Toll Free)

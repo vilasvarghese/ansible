@@ -1,0 +1,210 @@
+Ansible Practice:
+==================
+
+================================================= session ===========================================
+
+http://docs.ansible.com/ansible/latest/user_guide/intro_adhoc.html
+
+1)installing ansible : 
+Any one machine(Ubuntu/CentOS) is we have to select as a control machine
+
+For ubuntu(As control machine):
+$ sudo apt-get update
+$ sudo apt-get install software-properties-common
+$ sudo apt-add-repository ppa:ansible/ansible
+$ sudo apt-get update
+$ sudo apt-get install ansible
+
+For centos machine (as ansible control machine)
+
+[vagrant@localhost ~]$ sudo yum install epel-release
+[vagrant@localhost ~]$ sudo yum install ansible
+
+Checking the ansible is installed or not :
+[vagrant@localhost ~]$ ansible --version
+ansible 2.4.2.0
+
+2)adding our server ips to hosts file
+
+[vagrant@localhost ~]$ sudo vi /etc/ansible/hosts
+
+[servers]
+ubuntu_host ansible_ssh_host=192.168.33.14
+centos_host ansible_ssh_host=192.168.33.16
+
+3)authentication process:
+
+[vagrant@localhost ~]$ ssh-keygen
+enter multiple times & passing the default values
+
+[vagrant@localhost ~]$ ssh-copy-id 192.168.33.14
+[vagrant@localhost ~]$ ssh-copy-id 192.168.33.16
+
+
+4)cheking the nodes:
+
+[vagrant@localhost ~]$ ansible all -m ping
+It will display all the servers in the hosts file
+
+[vagrant@localhost ~]$ ansible ubuntu_host -m ping
+It will display the specific host name/ips
+
+[vagrant@localhost ~]$ ansible servers -m ping
+It will display the specific particular servers group nodes
+
+ubuntu_host | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+
+
+You can specify multiple hosts by separating them with colons:
+[vagrant@localhost ~]$ ansible -m ping ubuntu_host:centos_host
+
+[vagrant@localhost ~]$ ansible ubuntu_host:centos_host -m ping
+
+Ad-Hoc commands
+Ad hoc commands are the easiest way to explore Ansible. They have the following structure:
+
+ansible <pattern> -m <module> [-a <arguments>]  
+where:
+
+<pattern> specifies which hosts the module should be applied to.
+<module> tells Ansible which command (module) to execute.
+<arguments> are optional module parameters.
+
+
+1)vagrant@vagrant-ubuntu-trusty-64:~$ ansible all -m setup >out.out
+vagrant@vagrant-ubuntu-trusty-64:~$ cat out.out
+192.168.33.12 | SUCCESS => {
+    "ansible_facts": {
+        "ansible_all_ipv4_addresses": [
+            "192.168.33.12",
+            "10.0.2.15"
+			
+vagrant@vagrant-ubuntu-trusty-64:~$ vi out.out
+
+2)[vagrant@localhost ~]$ ansible all -m shell -a "uptime"
+ubuntu_host | SUCCESS | rc=0 >>
+ 10:20:52 up  4:35,  2 users,  load average: 0.00, 0.01, 0.05
+ 
+3)[vagrant@localhost ~]$ ansible all -m copy -a "src=/home/vagrant/out.out dest=/tmp"
+ubuntu_host | SUCCESS => {
+    "changed": true,
+    "checksum": "3716fd76825206decfcb3b3fa0c9a2859d4a50c4",
+	
+[vagrant@localhost ~]$ ansible all -m copy -a "src=/home/vagrant/out.out dest=/tmp"
+ubuntu_host | SUCCESS => {
+    "changed": false,
+    "checksum": "3716fd76825206decfcb3b3fa0c9a2859d4a50c4",
+
+==========================================
+Modules
+==========================================
+
+1) setup : It will provide facts about system
+
+ansible all -m setup 
+
+ansible_facts: ipv4_addresses,ipv6_addresses,ansible_architecture,ansible_bios_date,ansible_bios_version,ansible_distribution": "CentOS","ansible_pkg_mgr": "yum",
+
+[vagrant@10 ~]$ ansible all -m setup -a 'filter=ansible_architecture'
+
+[vagrant@10 ~]$ ansible all -m setup -a 'filter=ansible_dist*'
+
+[vagrant@10 ~]$ ansible all -m setup |grep distribution
+
+[vagrant@10 ~]$ ansible all -m setup -a 'filter=ansible_*_mb'
+
+[vagrant@10 ~]$ ansible all -m setup -a 'filter=ansible_memtotal_mb'
+
+[vagrant@10 ~]$ ansible all -m setup -a 'filter=ansible_interfaces'
+
+[vagrant@10 ~]$ ansible all -m setup -a 'filter=ansible_kernel'
+
+[vagrant@10 ~]$ ansible all -m setup -a 'filter=ansible_proc*'
+
+[vagrant@10 ~]$ ansible all -m setup -a 'filter=ansible_vir*'
+
+2)file : it will perform diff operations on file
+
+creating a file 
+
+[vagrant@10 ~]$ ansible servers -m file -a "path=/tmp/test1.txt state=touch"
+
+to change the mode of a file
+[vagrant@10 ~]$ ansible servers -m file -a "path=/tmp/test1.txt mode=777"
+
+changing user & group of a file
+[vagrant@10 ~]$ ansible servers -m file -a "path=/tmp/test1.txt owner=praveen group=group1" -b
+
+
+creating a directory :
+vagrant@control:~$ ansible webserver -m file -a "dest=/home/vagrant/sample1 mode=755 state=directory"
+
+creating a directory structure recursively: /a/b/c
+vagrant@control:~$ ansible webserver -m file -a "dest=/home/vagrant/a/b/c mode=755 state=directory"
+
+deleting c directory only:
+vagrant@control:~$ ansible webserver -m file -a "dest=/home/vagrant/a/b/c mode=755 state=absent"
+
+deleting all directory structure:
+vagrant@control:~$ ansible webserver -m file -a "dest=/home/vagrant/a mode=755 state=absent"
+
+changing the file modes:
+vagrant@control:~$ ansible webserver -m file -a "dest=/home/vagrant/praveen/file1 mode=600"
+
+
+
+3)yum or apt: to install any software on the nodes
+
+[vagrant@10 ~]$ ansible centos_host -m yum -a "name=httpd state=installed" -b
+
+[vagrant@10 ~]$ ansible ubuntu_host -m apt -a "name=apache2 state=installed" -b
+
+[vagrant@10 ~]$ ansible ubuntu_host -m apt -a "name=git state=installed" -b
+
+[vagrant@10 ~]$ ansible centos_host -m yum -a "name=wget state=installed" -b
+
+[vagrant@10 ~]$ ansible centos_host -m yum -a "name='*' state=latest" -b
+
+[vagrant@10 ~]$ ansible centos_host -m yum -a "name='*' state=latest exclude='kernel*','foo*'" -b
+
+
+
+
+
+
+4)service: By using this module we can start/stop the service
+
+[vagrant@10 ~]$ ansible centos_host -m service -a "name=httpd state=start" -b
+
+[vagrant@10 ~]$ ansible centos_host -m service -a "name=httpd state=stopped" -
+
+
+5)pause: pausing the command prompt for some time (u have to specify)
+
+[vagrant@10 ~]$ ansible all -m pause -a "seconds=10"
+
+[vagrant@10 ~]$ ansible centos_host  -m pause -a "minutes=1"
+
+[vagrant@10 ~]$ ansible centos_host -m pause -a "prompt='enter any string to continue:'"
+
+6)wait_for : 
+
+[vagrant@10 ~]$ ansible centos_host -m wait_for -a "timeout=3"
+
+need to examples on wait_for
+http://docs.ansible.com/ansible/latest/modules/wait_for_module.html
+
+
+7)fetch: It's like copy in reverse
+[vagrant@10 ~]$ ansible centos_host -m fetch -a "src=/tmp/somefile.txt dest=/tmp/fetched"
+
+
+
+
+
+
+
+

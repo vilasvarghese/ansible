@@ -960,7 +960,9 @@ Playbooks
 			how the tasks execute on different systems 
 			based on the values assigned to these variables.
 
-Ansible variable names should be letters, numbers, underscores and they should always start with a letter.
+
+
+
 		
 			Variables
 		Variables can be used from different sources
@@ -989,6 +991,14 @@ Ansible variable names should be letters, numbers, underscores and they should a
 			numbers, and 
 			underscores. E.g. wamp_21, port5 is valid variable names, whereas 01_port, _server are invalid.
 
+			Variables
+		Variables can be used from different sources
+			- Playbooks
+			- Files
+			- Inventories
+			- Command line
+			- Discovered variables
+			- Ansible Tower
 
 
 ########################################################################################		

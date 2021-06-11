@@ -110,7 +110,7 @@ Ansible uses combination of
 to pull variables per host group and run Ansible plays/tasks against hosts.
 
 	group_vars/all
-	group_vars/all is used to set variables that will be used for every host that Ansible is ran against.
+	group_vars/all is used to set variables that will be used for every host that Ansible is ran against.	
 
 
 
