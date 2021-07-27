@@ -11,8 +11,13 @@ ansible [-i <inventory>] host:group1:group2 -m module [-a arguments]
 
 2. Execute any shell command 
 	a. Execute shell command "uptime" on a particular host.
-	ansible <ip> -m shell -a "uptime"
-	ansible <ip> -m shell -a "free -m"
+	#ansible <ip> -m shell -a "uptime"
+	or 
+	#ansible all -m shell -a "uptime"
+	
+	#ansible <ip> -m shell -a "free -m"
+	or 
+	#ansible all -m shell -a "free -m"
 	#-m: module
 	#-a: argument
 
