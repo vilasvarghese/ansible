@@ -1,0 +1,185 @@
+install latest version of python
+	python3 is installed and pywinrm 
+	
+		pip install pywinrm >= 0.3.0
+		pip3 install pywinrm>= 0.3.0
+		
+
+Ansible require
+	wirm may be there in latest
+		if not install
+		install and activate WinRM listener
+	powershell 3.0 or newer 
+	.NET 4.0
+	
+	
+	
+Instructions	
+	python 
+		versions
+	ansible --version
+		ansible version and 
+		python version would be disabled
+		
+	
+	python --version
+	install python latest version
+--------------------------------------------
+https://www.python.org/downloads/source/
+https://www.python.org/downloads/release/python-3104/
+https://stackoverflow.com/questions/53543477/building-python-3-7-1-ssl-module-failed/72041007#72041007
+
+Install ansible
+
+
+Execute till download python (tried 3.10.4) from the link below 
+	https://computingforgeeks.com/install-latest-python-on-centos-linux/
+
+Upgrade openssl as documented in https://cloudwafer.com/blog/installing-openssl-on-centos-7/
+
+modify $python_home/Modules/Setup Update the OPENSSL location and uncomment the below lines
+OPENSSL=/usr/local/ssl _ssl _ssl.c
+-I$(OPENSSL)/include -L$(OPENSSL)/lib
+-lssl -lcrypto
+
+Continue the installation steps from https://computingforgeeks.com/install-latest-python-on-centos-linux/
+
+Set PATH before trying python3.10
+export PATH=$PATH:/usr/local/bin
+
+
+exit from root user and install ansible according the ansible documentation for pip install.
+	
+install ansible from 
+https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#installing-ansible-with-pip
+use python3.10 instead of python.
+--------------------------------------------------------------------------	
+	centos
+	https://computingforgeeks.com/install-latest-python-on-centos-linux/
+	curl -O https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tgz
+	tar xvzf Python-3.10.4.tgz
+	
+	https://cloudwafer.com/blog/installing-openssl-on-centos-7/
+
+	export PATH=$PATH:/usr/local/bin
+	
+	
+	exit from root user and install ansible using pip(reference: ansible documentation)
+	
+	
+	connecting window host - refer below section
+	
+	For adding an ubuntu node.
+		Refer C:\PraiseTheLord\HSBGInfotech\Others\vilas\ansible\installation\ssh-setup.txt
+	
+	--------------------------------------------------------------------------
+
+	
+	
+	https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+
+
+
+	windows connection uses winrm
+	-----------------------------
+	Not SSH
+		WinRM 
+		Feature of Windows Vista and higher 
+		Administrators run management scripts remotely; 
+		Handles those connections by implementing the WS-Management Protocol
+			based on Simple Object Access Protocol (commonly referred to as SOAP). 
+	What can we do with WinRM	
+		access, 
+		edit and 
+		update 
+			data from 
+				local and 
+				remote computers as a network administrator.
+
+	Why WinRM is perfect for using with Ansible Engine 
+		obtain hardware data from WS-Management protocol implementations 
+			running on non-Windows operating systems (in this specific case, Linux). 
+		Like a translator 
+		allows different types of operating systems to work together.
+
+	So, how do we connect?
+		With most versions of Windows, 
+			WinRM ships in the box but isn’t turned on by default. 
+		There’s a Configure Remoting for Ansible script
+			you can run on the remote Windows machine (in a PowerShell console as an Admin) 
+				to turn on WinRM. 
+		To set up an https listener, 
+			build a self-signed cert and execute PowerShell commands, 
+			just run the script like in the example below 
+			(if you’ve got the .ps1 file stored locally on your machine):
+		in powershell
+			cd .\Desktop\
+			.\ConfigureRemotingForAnsible.ps1
+		
+		More details
+			http://docs.ansible.com/ansible/latest/user_guide/windows_winrm.html
+		Setting up a windows host for ansible connection	
+			https://docs.ansible.com/ansible/latest/user_guide/windows_setup.html
+		connecting to a windows host	
+			https://www.ansible.com/blog/connecting-to-a-windows-host
+	
+content of inventory.yml	
+[win]
+
+localhost               ansible_connection=local
+172.31.11.242           ansible_connection=winrm       ansible_user=Administrator               ansible_password={pwd} ansible_winrm_transport=basic ansible_winrm_server_cert_validation=ignore
+#other2.example.com     ansible_connection=ssh        ansible_user=myotheruser
+
+ansible win -i inventory.yml -m win_ping
+--------------------------------------------	
+	install ansible and pywinrm using pip3
+	
+	
+	
+	pip3 install "pywinrm>=0.3.0"
+	
+	create a admin user "ansible"
+	open powershell as admin.
+	
+	follow the windows installation instructions in document
+	
+	
+	vi /etc/ansible/hosts
+	
+[win]
+ip
+
+[win:vars]
+ansible_user=ansible
+ansible_password=Welcome@1234
+ansible_connection=winrm
+ansible_winrm_server_cert_validation=ignore
+
+
+		ansible win -m win_ping
+
+
+		
+		
+---
+- hosts: win
+  gather_facts
+  tasks:
+    - name: Install Chocolately on Windows
+      win_chocolatey: name=procexp state=present	
+	  
+	  
+
+
+for linux
+---------
+Refer ansible\AnsibleNotes\Ansible installation section.
+
+https://docs.rackspace.com/support/how-to/enable-ssh-remote-root-login-on-centos-and-the-ubuntu-operating-system/
+https://www.digitalocean.com/community/tutorials/how-to-use-ssh-to-connect-to-a-remote-server
+
+To enable password based authentication
+	to use the 'ssh' connection type with passwords or pkcs11_provider, you must install the sshpass program
+		sudo yum install -y http://mirror.centos.org/centos/7/extras/x86_64/Packages/sshpass-1.06-2.el7.x86_64.rpm
+		
+	

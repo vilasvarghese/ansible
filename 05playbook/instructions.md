@@ -64,5 +64,6 @@ cd orchestration
 		ansible servers -m shell -a "systemctl status httpd" -b
 		ansible servers -m yum -a "name=httpd state=absent" -b
 
-9. 	Download and install java
-		
+9. 	pre_tasks and post_tasks
+		A real work usecase for reference.
+			https://www.middlewareinventory.com/blog/ansible-pre-tasks-and-post-tasks-example/

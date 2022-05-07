@@ -1,0 +1,68 @@
+Check security group to ensure you have given access
+
+sudo su
+#create user called "vilas"
+useradd -m -s /bin/bash vilas
+#setup password
+passwd vilas
+
+#add to sudo groups
+
+Making yourself a super user. Open /etc/sudoers. Make sure following two lines are uncommented:
+## Allows people in group wheel to run all commands
+%wheel ALL=(ALL)       ALL
+
+
+centos
+	## Same thing without a password
+	%wheel ALL=(ALL)       NOPASSWD: ALL
+	ansible ALL=(ALL)       NOPASSWD: ALL
+
+	Add yourself to wheel group.
+
+	usermod -aG wheel <yourname> 
+	usermod -aG wheel vilas
+ubuntu
+	usermod -aG root <yourname> 
+	usermod -aG root vilas
+	ansible ansible ALL=(ALL:ALL) ALL
+
+#login as vilas
+sudo su vilas
+cd 
+mkdir -p ~/.ssh
+touch ~/.ssh/authorized_keys
+
+chmod -R 700 ~/.ssh
+chmod 600 ~/.ssh/*
+
+under /etc/ssh/sshd_config
+	sudo vi /etc/ssh/sshd_config
+	#sudo is mandatory
+
+# To disable tunneled clear text passwords, change to no here!
+	PasswordAuthentication yes
+
+#add hosts in /etc/hosts
+
+sudo systemctl restart sshd.service
+
+
+
+ssh-keygen -t rsa
+
+ssh-copy-id vilas@<ip> 
+
+
+cat ~/.ssh/id_rsa.pub
+	Copy it to the remote ~/.ssh/authorized_keys
+	
+	
+Reference
+	https://community.cloudera.com/t5/Support-Questions/how-to-create-password-less-ssh-between-two-AWS-EC2/td-p/109442
+	https://www.cyberciti.biz/faq/how-to-disable-ssh-password-login-on-linux/
+	
+To permit root login	
+	https://docs.rackspace.com/support/how-to/enable-ssh-remote-root-login-on-centos-and-the-ubuntu-operating-system/
+	
+	

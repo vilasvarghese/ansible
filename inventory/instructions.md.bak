@@ -361,8 +361,6 @@ Child groups have a couple of properties to note:
 		/etc/ansible/host_vars/foosball
 	
 
-
-
 ----------------------------------
 ----------------------------------
 ----------------------------------

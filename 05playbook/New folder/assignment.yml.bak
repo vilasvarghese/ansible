@@ -1,0 +1,43 @@
+- hosts: all
+  become: true
+  tasks:
+  
+  - name: update repository index for Ubuntu
+    apt:
+      update_cache: yes
+    when: ansible_distribution_version == "Ubuntu"
+	
+  - name: install apache2 packages for Ubuntu
+    apt: 
+      name: apache2
+      state: latest
+    when: ansible_distribution_version == "Ubuntu"
+	
+  - name: Add php support for apache for Ubuntu
+    apt: 
+      name: libapache2-mod-php
+      state: latest
+    when: ansible_distribution_version == "Ubuntu"
+
+  - name: update repository index for CentOS
+    apt:
+      update_cache: yes
+    when: ansible_distribution_version == "CentOS"
+	
+  - name: install httpd (apache) packages for CentOS
+    apt: 
+      name: httpd
+      state: latest
+    when: ansible_distribution_version == "CentOS"
+	
+  - name: Add php support for apache for CentOS
+    apt: 
+      name: php
+      state: latest
+    when: ansible_distribution_version == "CentOS"
+
+
+#Can you make this more efficient? Do it after learning loops, lists and variables.
+
+#Answer1: C:\PraiseTheLord\HSBGInfotech\DevOps\ansible\Assignment\Assignment1.yml
+#Answer2: C:\PraiseTheLord\HSBGInfotech\DevOps\ansible\Assignment\Assignment2.yml

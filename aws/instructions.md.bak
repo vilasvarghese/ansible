@@ -103,7 +103,7 @@ Dynamic inventory
 		
 		export AWS_ACCESS_KEY_ID='changed'
 		Click on "Create Access Key" and paste it below
-		export AWS_SECRET_ACCESS_KEY='<key>'
+		export AWS_SECRET_ACCESS_KEY='7CQpVbJuGsmvU7H0URCx+e1JfuiTfA1lvwJ19zZc'
 		export ANSIBLE_HOSTS=/etc/ansible/ec2.py
 		export EC2_INI_PATH=/etc/ansible/ec2.ini
 ######################################################################################################

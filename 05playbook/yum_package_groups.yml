@@ -1,0 +1,232 @@
+Based on https://www.toptechskills.com/ansible-tutorials-courses/ansible-yum-module-tutorial-examples/
+
+
+Ansible’s yum module 
+    used to manage packages with the yum package manager
+    default on Red Hat based Linux distributions 
+        Red Hat Enterprise Linux 
+        CentOS. 
+    Most systems require root/superuser permissions to manage packages, 
+        Use "become: true"
+        
+Recommend: always using the "update_cache: true" parameter when 
+    installing or 
+    updating packages
+    
+    forces yum to check if the package cache is out of date and it update it if needed.
+        (yum update -y will automatically be fired)
+------------------------------------------------------------------------------------------
+- name: ensure wget is installed
+  yum:
+    name: wget
+    state: present
+    update_cache: true
+  become: true        
+------------------------------------------------------------------------------------------
+N.B:  To manage yum repositories, use the yum_repository module. is different from yum module
+
+Also, there are difference in package name between yum and apt. so your yml's are not going to be o/s independent.
+
+e.g. package name for apache is "apache" in apt and "httpd" in yum.
+
+
+
+When to use the yum module vs apt module
+-----------------------------------------
+    yum module - 
+        Red Hat based Linux distributions such as Red Hat Enterprise Linux and CentOS.
+    apt module - 
+        Debian based Linux distributions such as Debian and Ubuntu.
+    
+When to use the yum module vs package module
+---------------------------------------------
+The package module 
+    manages packages using whichever package manager is present on the remote host, such as 
+        yum, 
+        apt or 
+        dnf. 
+    This appears to be the most convenient way to manage packages but 
+        avoid using the package module in any situation.
+
+The biggest reason to avoid it is because 
+    same package may have different names on different distros.
+        e.g. "apache" on ubuntu is "httpd" on centos.
+        server package for Redis is called 
+            redis-server on Debian based distros 
+            redis on Red Hat based distros.
+
+If you are running a single playbook across different 
+    use ansible_os_family variable:    
+    
+------------------------------------------------------------------------------------------
+- name: install redis on RHEL based distros
+  yum:
+    name: redis
+    state: present
+    update_cache: true
+  become: true
+  when: ansible_os_family == 'RedHat'
+
+- name: install redis on Debian based distros 
+  apt:
+    name: redis-server
+    state: present
+    update_cache: true
+  become: true
+  when: ansible_os_family == 'Debian'
+------------------------------------------------------------------------------------------
+To install a package with the yum module
+---------------------------------------
+    Use
+        state: present
+        update_cache: true
+        #name is the package name which you need to find out.
+------------------------------------------------------------------------------------------
+- name: ensure wget is installed
+  yum:
+    name: wget
+    state: present
+    update_cache: true
+  become: true
+  
+------------------------------------------------------------------------------------------
+To install a specific version of a package
+
+See which versions are available by using
+    yum --showduplicates list $PACKAGE
+    
+     format of the version string is {{ package_name }}-{{ package_version }}-{{ package_release }}
+------------------------------------------------------------------------------------------
+- name: ensure a specific version of wget is installed
+  yum:
+    name: wget-1.14-18.el7
+    state: present
+    update_cache: true
+  become: true
+------------------------------------------------------------------------------------------
+To install multiple packages with the yum
+    You can do that using
+        list (as below)
+        loop (using loop key)
+        
+    List is prefered over loop
+        list is efficient.
+------------------------------------------------------------------------------------------
+- name: ensure wget and ruby are installed
+  yum:
+    name: 
+      - wget
+      - ruby
+    state: present
+    update_cache: true
+  become: true
+------------------------------------------------------------------------------------------
+
+Remove a package with the yum
+------------------------------------------------------------------------------------------
+- name: ensure wget is not installed
+  yum:
+    name: wget
+    state: absent
+    autoremove: true
+  become: true
+------------------------------------------------------------------------------------------
+Update a package with the yum
+
+------------------------------------------------------------------------------------------
+- name: ensure latest version of wget is installed
+  yum:
+    name: wget
+    state: latest
+    update_cache: true
+  become: true
+
+------------------------------------------------------------------------------------------
+
+downgrade a package with the yum
+
+------------------------------------------------------------------------------------------
+- name: downgrade ruby and ruby-libs to a specific version
+  yum:
+    name: 
+      - ruby-2.0.0.648-33.el7_4
+      - ruby-libs-2.0.0.648-33.el7_4
+    state: present
+    allow_downgrade: true
+    update_cache: true
+  become: true
+------------------------------------------------------------------------------------------
+list available packages with the yum
+    This can be used for debugging.
+
+------------------------------------------------------------------------------------------
+- name: list installed and available versions of ruby
+  yum:
+    list: ruby
+  become: true
+  when: ansible_os_family == 'RedHat'
+  register: yum_output
+
+- name: print available ruby versions
+  debug:
+    msg: "{{ item.version }}-{{ item.release }}"
+  loop: "{{ yum_output.results | selectattr('yumstate', 'equalto', 'available') | list }}"
+
+- debug: var=yum_output
+------------------------------------------------------------------------------------------
+Install package groups with the yum
+    Package and environment groups are collections of packages 
+        commonly installed together. 
+    These are the package groups available on CentOS 7.
+        yum group list ids command:
+------------------------------------------------------------------------------------------
+Output
+
+Available Environment Groups:
+   Minimal Install (minimal)
+   Compute Node (compute-node-environment)
+   Infrastructure Server (infrastructure-server-environment)
+   File and Print Server (file-print-server-environment)
+   Cinnamon Desktop (cinnamon-desktop-environment)
+   MATE Desktop (mate-desktop-environment)
+   Basic Web Server (web-server-environment)
+   Virtualization Host (virtualization-host-environment)
+   Server with GUI (graphical-server-environment)
+   GNOME Desktop (gnome-desktop-environment)
+   KDE Plasma Workspaces (kde-desktop-environment)
+   Development and Creative Workstation (developer-workstation-environment)
+Available Groups:
+   Cinnamon (cinnamon-desktop)
+   Compatibility Libraries (compat-libraries)
+   Console Internet Tools (console-internet)
+   Development Tools (development)
+   Educational Software (education)
+   Electronic Lab (electronic-lab)
+   Fedora Packager (fedora-packager)
+   General Purpose Desktop (general-desktop)
+   Graphical Administration Tools (graphical-admin-tools)
+   Haskell (haskell)
+   Legacy UNIX Compatibility (legacy-unix)
+   MATE (mate-desktop)
+   Milkymist (milkymist)
+   Scientific Support (scientific)
+   Security Tools (security-tools)
+   Smart Card Support (smart-card)
+   System Administration Tools (system-admin-tools)
+   System Management (system-management)
+   TurboGears application framework (turbogears)
+   Xfce (xfce-desktop)
+Done
+------------------------------------------------------------------------------------------
+See the packages in the group with yum group info $PACKAGE, e.g. 
+    yum group info development: #development is a package from the output above.
+    To install a package
+------------------------------------------------------------------------------------------
+- name: ensure development tools are installed
+  yum:
+    name: "@development"
+    state: present
+  become: true
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+

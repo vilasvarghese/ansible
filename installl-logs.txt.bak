@@ -1,0 +1,69 @@
+   1  curl -O https://www.python.org/ftp/python/3.10.4/Python-3.10.4.tgz
+    2  ls
+    3  tar xvzf Python-3.10.4.tgz
+    4  cd Python-3.10.4
+    5  ./configure --enable-optimizations
+    6  sudo make altinstall
+    7  echo $PATH
+    8  export PATH=$PATH:/usr/local/bin/
+    9  cd /usr/local/bin/
+   10  ls
+   11  pip3.10
+   12  python 3.10
+   13  python3.10
+   14  python3.10 -m pip install --upgrade pip
+   15  pip3.10 install awsclie --user
+   16  pip3.10 install awscli --user
+   17  pip3 install awscli --user
+   18  python3.10 -m pip install --user ansible
+   19  sudo yum install openssl-devel
+   20  cd /home/centos/Python-3.10.4
+   21  sudo ./configure
+   22  sudo make
+   23  sudo make install
+   24  python3.10 -m pip install --user ansible
+   25  yum install gcc openssl-devel bzip2-devel libffi-devel zlib-devel -y
+   26  cd /usr/local/
+   27  openssl version -a
+   28  sudo yum install perl-core zlib-devel -y
+   29  cd /usr/local/src/
+   30  ls
+   31  curl -O https://www.openssl.org/source/openssl-1.1.1c.tar.gz
+   32  tar xvzf openssl-1.1.1c.tar.gz
+   33  cd openssl-1.1.1c
+   34  sudo ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl shared zlib
+   35  sudo make
+   36  sudo make test
+   37  sudo make install
+   38  top
+   39  topcd /etc/ld.so.conf.d/
+   40  cd /etc/ld.so.conf.d/
+   41  ls
+   42  vi openssl-1.1.1c.conf
+   43  sudo ldconfig -v
+   44  sudo mv /bin/openssl /bin/openssl.backup
+   45  vi  /etc/profile.d/openssl.sh
+   46  sudo chmod +x /etc/profile.d/openssl.sh
+   47  source /etc/profile.d/openssl.sh
+   48  echo $PATH
+   49  which openssl
+   50  openssl version -a
+   51  pwd
+   52  cd /home/centos/Python-3.10.4
+   53  ls
+   54  cd Modules/
+   55  ls
+   56  vi Setup
+   57  which openssl
+   58  vi Setup
+   59  pwd
+   60  cd ..
+   61  ./configure --enable-optimizations
+   62  sudo make altinstall
+   63  echo $PATH
+   64  python3.10 -m pip install --user ansible-m pip install --user ansible
+   65  python3.10 -m pip install --user ansible
+   66  ansible
+   67  top
+   68*
+   69  history

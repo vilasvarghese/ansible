@@ -623,9 +623,8 @@ Ansible language basics
 		Standard ansible ad hoc command pattern
 			$ ansible [pattern] -m [module] -a "[module options]"
 			
-			e.g 
-				ansible all -m ping 
-				ansible frontend -m ping
+			ansible all -m ping 
+			ansible frontend -m ping
 		
 		Rebooting servers
 		-----------------

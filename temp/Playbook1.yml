@@ -1,0 +1,22 @@
+---
+- name: Transfer and execute a script.
+  hosts: servers
+  remote_user: vilas
+#  sudo: yes
+  tasks:
+     - name: Transfer the script
+       copy: src=mkdir.sh dest=/home/vilas mode=0777
+
+     - name: Execute the script
+       command: sh /home/vilas/mkdir.sh
+	   
+------------------------
+
+---
+- hosts: swift
+  become: yes
+
+  roles:
+    - demo-role
+
+	

@@ -1,0 +1,128 @@
+
+References: 
+	http://redhatgov.io/workshops/ansible_tower_azure/exercise2.0/
+	https://computingforgeeks.com/install-and-configure-ansible-tower-on-centos-rhel/
+Modified by Vilas Varghese
+--------
+
+Pre-requisite
+--------------
+
+TBD: 40 GB Hard disk CentOS 7 or RHEL 7 64X box
+
+
+
+
+
+
+scp -i vilas.pem ansible-automation-platform-setup-bundle-2.1.0-1.tar.gz centos@ec2-3-93-45-248.compute-1.amazonaws.com:/home/centos/
+
+
+
+Ansible exists in two standards:
+
+	Ansible Core – Provides Ansible runtime for executing playbooks.
+	Ansible Tower – Provides management, visibility, job scheduling, credentials, RBAC, auditing/compliance e.t.c.
+	By installing Ansible Tower, Ansible core will be installed as a dependency. Below are the steps you’ll use to install Ansible Tower on a CentOS 7 server.
+
+
+
+ssh to the box
+sudo su
+sudo yum -y update
+sudo yum -y install epel-release
+
+install ansible latest
+
+
+
+
+Step 1: Change directories
+Change directories to /tmp
+
+cd /tmp
+Step 2: Download Red Hat Ansible Tower
+Download the latest Ansible Tower package
+
+curl -O http://releases.ansible.com/ansible-tower/setup/ansible-tower-setup-latest.tar.gz
+curl -O https://releases.ansible.com/ansible-tower/setup/ansible-tower-setup-3.8.6-2.tar.gz 
+
+Step 3: Untar and unzip the package file
+tar xvfz /tmp/ansible-tower-setup-latest.tar.gz
+Step 4: Change directories
+Change directories into the Ansible Tower package
+
+cd /tmp/ansible-tower-setup-*/
+Step 5: Open inventory file
+Using an editor of your choice, open the inventory file
+
+vi inventory
+Step 6: Identify variables
+Fill a few variables out in an inventory file: admin_password, pg_password, rabbitmq_password
+
+[tower]
+localhost ansible_connection=local
+
+[database]
+
+[all:vars]
+admin_password='ansibleWS'
+
+pg_host=''
+pg_port=''
+
+pg_database='awx'
+pg_username='awx'
+pg_password='ansibleWS'
+
+rabbitmq_port=5672
+rabbitmq_vhost=tower
+rabbitmq_username=tower
+rabbitmq_password='ansibleWS'
+rabbitmq_cookie=cookiemonster
+
+# Needs to be true for fqdns and ip addresses
+rabbitmq_use_long_name=false
+# Isolated Tower nodes automatically generate an RSA key for authentication;
+# To disable this behavior, set this value to false
+# isolated_key_generation=true
+
+
+Step 7: Run setup
+Run the Ansible Tower setup script
+
+sudo ./setup.sh
+Step 7 will take approx. 10-15 minutes to complete. This may be a good time to take a break.
+Step 8: Confirm results
+At this point, your Ansible Tower installation should be complete. You can access your Tower (not forgetting that workshopname is the name of your workshop, and # is your student number) at:
+
+example-tower0.example.redhatgov.io
+Ensuring Installation Success
+
+
+Step 4: Configure Ansible Tower
+You can configure Ansible Tower using:
+
+	CLI
+	RESTful API
+	Web UI
+
+Here we are using Web UI 
+	most preferred method 
+		by most new Ansible Tower users. 
+	Open your favorite browser point to your Ansible Tower server IP or hostname via https protocol.
+	
+	ip:443/
+	ip:443/#/login
+	
+	Login as admin user and password set in the inventory file.
+	
+	Once you are logged in, you need to configure Ansible Tower license. Browse to the license file and accept the terms.
+	
+	Get a free account
+		https://www.redhat.com/en/technologies/management/ansible/try-it
+		
+---------------------------------------------------------------------------------------------------------		
+https://linuxhint.com/install_configure_ansible_rhel8/		
+ansible on rhel 8
+

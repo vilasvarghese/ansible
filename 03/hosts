@@ -1,0 +1,23 @@
+[control]
+ubuntu-c ansible_connection=local
+
+[centos]
+centos1 ansible_port=2222
+centos[2:3]
+
+#defining a variable for the group mentioned in centos
+[centos:vars]
+ansible_user=root
+
+[ubuntu]
+ubuntu[1:3]
+
+#defining a variable for the group mentioned in ubuntu
+[ubuntu:vars]
+ansible_become=true
+ansible_become_pass=password
+
+#defining a group of group.
+[linux:children]
+centos
+ubuntu
