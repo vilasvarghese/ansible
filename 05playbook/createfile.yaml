@@ -1,5 +1,5 @@
-- hosts: servers
+- hosts: all
   become: true
   tasks:
   - name: Create file named vilas.txt
-    file: path=/home/ansible/vilas.txt state=touch
+    file: path=/tmp/vilas.txt state=touch

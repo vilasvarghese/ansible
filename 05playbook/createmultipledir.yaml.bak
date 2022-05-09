@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Create multiple directories
+    file: path={{ item }} state=directory
+    with_items:
+    - '/tmp/vn1'
+    - '/tmp/vn2'
+    - '/tmp/vn3'

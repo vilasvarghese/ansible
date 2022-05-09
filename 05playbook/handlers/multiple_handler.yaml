@@ -1,27 +1,29 @@
-- name: vilas
-  hosts: servers
+---
+- hosts: staging
+  name: Install
   become: yes
   tasks:
-         - name: update everything
-           package:
-               name: '*'
-               state: executing secondary task.
-               exclude: kernel*
-         - name: Copy using inline content
-           copy:
-               content: "update the file"
-               dest: /home/vilas.txt
-               mode: "0777"
+         - name: Install Apache2 on  Ubuntu server
+           apt:
+                   name: apache2
+                   state: present
+                   update_cache: yes
+
+         - name: Allow HTTP traffic on UFW firewall
+           ufw:
+                   rule: allow
+                   port: http
+                   proto: tcp
+
            notify:
-                - update
-                - data
+                   - Restart apache2
+                   - Reload ufw firewall
   handlers:
-       - name: update
-         find:
-                paths: /home/
-                patterns: '*.txt'
-                recurse: yes
-         register: new_file
-       - name: data
-         debug:
-            var: new_file.matched
+          - name: Restart apache2
+            service:
+                    name:  apache2
+                    state: restarted
+
+          - name: Reload ufw firewall
+            ufw:
+                    state: enabled

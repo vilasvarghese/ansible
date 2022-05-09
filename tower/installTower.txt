@@ -126,3 +126,7 @@ Here we are using Web UI
 https://linuxhint.com/install_configure_ansible_rhel8/		
 ansible on rhel 8
 
+
+
+Known issues.
+	https://docs.ansible.com/ansible-tower/2.4.0/html/installandreference/known_issues.html

@@ -1,6 +1,7 @@
 ---
-- hosts: servers
+#This should work on ubuntu and centos
+- hosts: all
   become: true
   tasks:
   - name: Create directory
-    file: path=/home/ubuntu/vilas state=directory mode=775 owner=ubuntu
+    file: path=/tmp/vilas state=directory mode=775

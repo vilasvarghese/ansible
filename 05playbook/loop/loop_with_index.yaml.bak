@@ -1,5 +1,5 @@
 ---
-- hosts: ubuntu
+- hosts: ubuntu_webserver
   tasks:
   - name: Indexes with Ansible loop
     debug:

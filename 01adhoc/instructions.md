@@ -34,6 +34,9 @@ ansible -i inventory.yml centos -m copy -a "src=abc.txt dest=/tmp/"
 
 	Install git
 	ansible -i inventory.yml centos -m yum -a "name=git state=present" --become
+	ansible -i inventory.yml ubuntu -m apt -a "name=git state=present" --become -kK
+		#-k, --ask-pass: ask for connection password #ignore if mentioned in inventory
+		#-K, --ask-become-pass: ask for privilege escalation password
 	
 		on the centos machine
 			git 
@@ -62,6 +65,7 @@ inventory = inventory.yml
 
 8. ansible all -m gather_facts
 	ansible all -m gather_facts --limit <ip>
+	ansible all -i inventory.yml -m gather_facts
 
 9. Execute any shell command 
 	a. Execute shell command "uptime" on a particular host.
@@ -88,7 +92,8 @@ inventory = inventory.yml
 	
 13. See the setup. This will show the hardware details of the box.
 	a. See host hardware details 
-		ansible centos -m setup
+		ansible centos -i inventory.yml -m setup
+		ansible ubuntu -i inventory.yml -m setup
 		#host definition in inventory file: host2 ansible_ssh_host=192.168.176.143
 	
 	b. See group hardware details

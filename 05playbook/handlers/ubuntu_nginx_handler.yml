@@ -1,12 +1,14 @@
 ---
-- hosts: centos
+- hosts: ubuntu
   become: true
   tasks:
-      - name: Install EPEL release for nginx
-        yum: name=epel-release state=present
+      - name: "apt-get update"
+        apt:
+         update_cache: yes
+         cache_valid_time: 3600
 
       - name: Install nginx web server
-        yum: name=nginx state=installed update_cache=true
+        apt: name=nginx state=latest
         notify:
           - start nginx
 
@@ -15,4 +17,4 @@
 
   handlers:
       - name: start nginx
-        service: name=nginx enables=yes state=started
+        service: name=nginx state=restarted

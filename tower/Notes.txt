@@ -139,3 +139,10 @@ https://docs.ansible.com/ansible-tower/3.8.6/html/userguide/search_sort.html
 		Project: select  the one created
 		Playbook: Select the playbook from 
 		Credential: select  the one created
+	
+	
+Change admin pwd.		
+	tower-manage changepassword admin		
+
+manage tower
+	ansible-tower-service --help

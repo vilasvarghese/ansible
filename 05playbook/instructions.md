@@ -11,6 +11,7 @@ You can modify it by adding -i <inventory> while executing the command.
 1. 	createfile.yaml is a simple playbook which would create a file in /home directory.
 
 	Syntax check
+	ansible-playbook <playbook.yml> --check
 		ansible-playbook <playbook.yml> --syntax-check
 			Success Output: filename
 			Failure Output: error message with description
@@ -50,10 +51,19 @@ You can modify it by adding -i <inventory> while executing the command.
 		curl <ip:80>
 		curl <ip:8080>
 		ansible servers -m yum -a "name=httpd state=absent" -b
+
+9. 	This is wip
+	Create user
+		this would fail since pwd is not encrypted. That is a check from the module.
+		ansible-playbook createuser.yml
+		
+		This can be done using jinja as follows
+		ansible-playbook newcreateuser.yml  --extra-vars "uusername=vilas upassword=vilas123"
+		ansible-playbook m.yml  --extra-vars "uusername=vilas upassword=vilas123"
 -----------------------------------------------------------------
 cd orchestration
 -----------------------------------------------------------------	
-9. 	Install and start apache
+10. 	Install and start apache
 		ansible-playbook apache.yaml
 		Now the curl should succeed.
 		curl <ip:80>
@@ -64,6 +74,8 @@ cd orchestration
 		ansible servers -m shell -a "systemctl status httpd" -b
 		ansible servers -m yum -a "name=httpd state=absent" -b
 
-9. 	pre_tasks and post_tasks
+11. 	pre_tasks and post_tasks
 		A real work usecase for reference.
 			https://www.middlewareinventory.com/blog/ansible-pre-tasks-and-post-tasks-example/
+			
+			

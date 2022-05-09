@@ -1,0 +1,10 @@
+[win]
+#localhost                      ansible_connection=local
+172.31.11.242           ansible_connection=winrm       ansible_user=Administrator       ansible_password=<my pwd> ansible_winrm_transport=basic ansible_winrm_server_cert_validation=ignore
+#other2.example.com     ansible_connection=ssh        ansible_user=myotheruser
+
+[centos]
+172.31.23.28            ansible_user=vilas              ansible_password=<my pwd>
+
+[ubuntu]
+172.31.23.165           ansible_user=vilas              ansible_password=<my pwd>

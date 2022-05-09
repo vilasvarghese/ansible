@@ -36,8 +36,7 @@ cat << EOF
 }
 EOF
 ------------------------------------------------
-13. chmod +x ./myversion.fact
-	./myversion.fact
+13. ./myversion.fact
 	Execute and verify that it generates a json response.
 	
 14. ansible localhost -m setup | egrep -i "(Git_Version|httpd)"

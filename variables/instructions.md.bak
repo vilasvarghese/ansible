@@ -8,7 +8,7 @@ for e.g.
 	ansible-playbook 1simple_variable.yaml
 
 2. variables can be also array or list type. 
-	Refer: 2country.yaml
+	Refer: country.yaml
 
 hello contains 9 values, and each one can be accessed using the index numbers(starting from zer0). The following task will output ‘South America‘
 

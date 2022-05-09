@@ -1,5 +1,5 @@
 ---
-- hosts: ubuntu
+- hosts: ubuntu_webserver
   become: yes
   tasks:
     - name: Create new users

@@ -3,7 +3,7 @@ DevOps Course Contents
 
 References: 
 https://docs.ansible.com/ansible/latest/installation_guide/index.html
-
+C:\PraiseTheLord\HSBGInfotech\DevOps\ansible\
 
 Prerequisits
 ------------
@@ -1097,6 +1097,9 @@ Playbooks
 ########################################################################################
 		•	Manage task control, handlers, and tags in Ansible playbooks.
 ########################################################################################		
+			
+			
+			
 		•	Use of decision statements, ‘when’, etc.
 ########################################################################################		
 		•	Some common and important modules

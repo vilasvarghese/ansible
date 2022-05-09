@@ -97,7 +97,7 @@ loop:
 		property called ‘required‘ which is set to ‘True‘ 
 		for 2 packages and ‘False‘ for one package.
 
-	Here we are passing the list of software to install as a variable though loop.
+	Here we are passing the list of software to install as a variable though loop
 
 
 6. Loop with dictionaries

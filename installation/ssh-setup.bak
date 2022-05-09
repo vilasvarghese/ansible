@@ -10,7 +10,6 @@ passwd vilas
 	in ubuntu
 		usermod -aG sudo vilas
 		su - vilas
-		groups newuser
 		
 in centos
 	Making yourself a super user. Open /etc/sudoers. Make sure following two lines are uncommented:

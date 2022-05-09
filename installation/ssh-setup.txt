@@ -1,61 +1,81 @@
 Check security group to ensure you have given access
 
-sudo su
-#create user called "vilas"
-useradd -m -s /bin/bash vilas
-#setup password
-passwd vilas
+ssh -V 
+	confirm you have openssh
+	if no openssh - sudo apt install openssh-server
 
-#add to sudo groups
 
-Making yourself a super user. Open /etc/sudoers. Make sure following two lines are uncommented:
-## Allows people in group wheel to run all commands
-%wheel ALL=(ALL)       ALL
+Do the following on all nodes.
+	sudo su
+	#create user called "vilas"
+	useradd -m -s /bin/bash vilas
+	#setup password
+	passwd vilas
+
+	#add to sudo groups
+
 
 
 centos
+	Without this user would be prompted for sudo user's access issue.
+	Making yourself a super user. Open /etc/sudoers. Make sure following two lines are uncommented:
+	## Allows people in group wheel to run all commands
+	%wheel ALL=(ALL)       ALL
+
 	## Same thing without a password
 	%wheel ALL=(ALL)       NOPASSWD: ALL
-	ansible ALL=(ALL)       NOPASSWD: ALL
+	vilas ALL=(ALL)       NOPASSWD: ALL
 
 	Add yourself to wheel group.
 
 	usermod -aG wheel <yourname> 
 	usermod -aG wheel vilas
+	
 ubuntu
-	usermod -aG root <yourname> 
-	usermod -aG root vilas
-	ansible ansible ALL=(ALL:ALL) ALL
+	usermod -aG sudo <yourname> 
+	usermod -aG sudo vilas
+	https://code-maven.com/enable-ansible-passwordless-sudo
+	visudo 
+		change 
+			%sudo   ALL=(ALL:ALL) ALL
+		to 
+			%sudo   ALL=(ALL:ALL) NOPASSWD: ALL
+			
 
-#login as vilas
-sudo su vilas
-cd 
-mkdir -p ~/.ssh
-touch ~/.ssh/authorized_keys
+#Do the following on the client (destination)
+	#login as vilas
+	sudo su vilas
+	cd 
+	mkdir -p ~/.ssh
+	touch ~/.ssh/authorized_keys
 
-chmod -R 700 ~/.ssh
-chmod 600 ~/.ssh/*
+	chmod -R 700 ~/.ssh
+	chmod 600 ~/.ssh/*
 
-under /etc/ssh/sshd_config
-	sudo vi /etc/ssh/sshd_config
-	#sudo is mandatory
+	under /etc/ssh/sshd_config
+		sudo vi /etc/ssh/sshd_config
+		#sudo is mandatory
 
 # To disable tunneled clear text passwords, change to no here!
 	PasswordAuthentication yes
 
-#add hosts in /etc/hosts
+	PermitRootLogin yes (PermitRootLogin prohibit-password for ubuntu)
+	ClientAliveInterval 1200
+	ClientAliveCountMax 3
 
-sudo systemctl restart sshd.service
+	#add hosts in /etc/hosts
 
-
-
-ssh-keygen -t rsa
-
-ssh-copy-id vilas@<ip> 
+	sudo systemctl restart sshd.service
 
 
-cat ~/.ssh/id_rsa.pub
-	Copy it to the remote ~/.ssh/authorized_keys
+#Do the following on source (server)
+	ssh-keygen -t rsa
+
+	ssh-copy-id vilas@<ip> 
+
+
+	cat ~/.ssh/id_rsa.pub
+		Copy it to the remote ~/.ssh/authorized_keys
 	
 	
 Reference
@@ -67,3 +87,10 @@ To permit root login
 	https://docs.rackspace.com/support/how-to/enable-ssh-remote-root-login-on-centos-and-the-ubuntu-operating-system/
 	
 	
+	
+alternatively you can have ssh with pwd (local pwd for key)
+	add this pwd to ssd-agent
+
+This can be done executing the below commands.	
+	eval $(ssh-agent) 
+	ssh-add
