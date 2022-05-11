@@ -1,0 +1,6 @@
+- import_playbook: "/path/to/{{ import_from_extra_var }}"
+- import_playbook: "{{ import_from_vars }}"
+  vars:
+    import_from_vars: /path/to/one_playbook.yml
+    
+#ansible-playbook inject-at-runtime -e import_from_extra_var=other_playbook.yml

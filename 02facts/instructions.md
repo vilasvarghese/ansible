@@ -1,3 +1,17 @@
+Refer 
+
+
+1: https://www.redhat.com/sysadmin/playing-ansible-facts
+2: https://docs.ansible.com/ansible/latest/user_guide/playbooks_vars_facts.html
+3: https://www.middlewareinventory.com/blog/ansible-facts-list-how-to-use-ansible-facts/
+
+
+
+
+Below instructions may not be required.
+
+
+
 1. Create following directory on managed nodes.
 								--------------
 	/etc/ansible/facts.d 

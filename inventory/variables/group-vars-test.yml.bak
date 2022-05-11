@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  vars:
+  name: group-vars-test
+  tasks:
+  - name: Ansible Basic Variable Example
+    debug:
+      msg: "{{ abc }} on {{ ansible_user }}"

@@ -1,3 +1,17 @@
+Refer 
+
+
+1: https://www.redhat.com/sysadmin/playing-ansible-facts
+2: https://docs.ansible.com/ansible/latest/user_guide/playbooks_vars_facts.html
+
+
+
+
+
+Below instructions may not be required.
+
+
+
 1. Create following directory on managed nodes.
 								--------------
 	/etc/ansible/facts.d 
@@ -36,7 +50,8 @@ cat << EOF
 }
 EOF
 ------------------------------------------------
-13. ./myversion.fact
+13. chmod +x ./myversion.fact
+	./myversion.fact
 	Execute and verify that it generates a json response.
 	
 14. ansible localhost -m setup | egrep -i "(Git_Version|httpd)"

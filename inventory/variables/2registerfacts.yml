@@ -1,0 +1,10 @@
+- name: Retrieve hostname
+  hosts:
+    - raspis
+    - server
+  tasks:
+    - name: Retrieve the hostname
+      command: hostname
+      register: result
+    - debug:
+        var: result

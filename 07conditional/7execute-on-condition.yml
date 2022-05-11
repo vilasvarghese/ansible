@@ -1,0 +1,17 @@
+tasks:
+  - name: Register a variable, ignore errors and continue
+    ansible.builtin.command: /bin/false
+    register: result
+    ignore_errors: true
+
+  - name: Run only if the task that registered the "result" variable fails
+    ansible.builtin.command: /bin/something
+    when: result is failed
+
+  - name: Run only if the task that registered the "result" variable succeeds
+    ansible.builtin.command: /bin/something_else
+    when: result is succeeded
+
+  - name: Run only if the task that registered the "result" variable is skipped
+    ansible.builtin.command: /bin/still/something_else
+    when: result is skipped

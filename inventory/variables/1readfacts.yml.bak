@@ -1,0 +1,7 @@
+- name: Retrieve host vars
+  hosts:
+    - localhost
+    - ubuntu
+  tasks:
+    - debug:
+        var=hostvars[inventory_hostname]

@@ -1,0 +1,15 @@
+- name: Registered variable usage as a loop list
+  hosts: all
+  tasks:
+
+    - name: Retrieve the list of home directories
+      ansible.builtin.command: ls /home
+      register: home_dirs
+
+    - name: Add home dirs to the backup spooler
+      ansible.builtin.file:
+        path: /mnt/bkspool/{{ item }}
+        src: /home/{{ item }}
+        state: link
+      loop: "{{ home_dirs.stdout_lines }}"
+      # same as loop: "{{ home_dirs.stdout.split() }}"

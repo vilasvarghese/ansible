@@ -1,0 +1,18 @@
+---
+
+- name: test variables...
+  hosts: all
+  vars:
+    - some_junk: "1"
+#  gather_facts: no # foo and bar are unavailable whether I gather facts or not.
+# But if you depend on the inventory file in the current folder, they would be injected.
+  tasks:
+    - debug: msg="hostvars={{hostvars}}"
+    - debug: msg="vars={{vars}}"
+    - debug: msg="groups={{groups}}"
+    - debug: msg="some_junk={{some_junk}}"
+    - debug: msg="foo={{foo}}"
+    - debug: msg="bar={{bar}}"
+#ansible-playbook -i inventory inventory_variable.yml 
+#or
+#ansible-playbook inventory_variable.yml     

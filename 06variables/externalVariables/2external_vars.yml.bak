@@ -1,0 +1,11 @@
+---
+- name: testing
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars_files:
+    - var_file.yml
+  tasks:
+    - debug:
+        var: "{{ item }}.first"
+      with_items: "{{ var1 }}"

@@ -1,0 +1,11 @@
+- name: Retrieve hostname
+  hosts:
+    - localhost
+  tasks:
+    - name: Retrieve the hostname
+      command: hostname
+      register: result
+    - set_fact:
+        hostname: "{{ result.stdout }}"
+    - debug:
+        var: hostname

@@ -1,0 +1,15 @@
+[group_a]
+server1 ansible_host=10.31.15.156
+server2 ansible_host=10.31.5.33
+
+[group_b]
+server3 ansible_host=203.0.113.113
+server4 ansible_host=server_hostname
+
+[group_a:vars]
+ansible_user=<myuser?
+abc=atesting
+
+[group_b:vars]
+ansible_user=centos
+abc=testing

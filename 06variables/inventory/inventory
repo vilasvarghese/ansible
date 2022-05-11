@@ -1,0 +1,3 @@
+[foobar]
+someHost 		foo="some string" bar=123
+someOtherHost 	foo="some other string" bar=456

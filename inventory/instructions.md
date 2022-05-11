@@ -87,8 +87,7 @@ one.example.com exists in the
 	Refer: inventory2
 	Example of grouping inventory
 		ansible-inventory -i groupinventory --list
-	
-	
+
 Group of groups
 ---------------
 	metagroup:
@@ -157,6 +156,14 @@ to pull variables per host group and run Ansible plays/tasks against hosts.
 	group_vars/all
 	group_vars/all is used to set variables that will be used for every host that Ansible is ran against.	
 
+
+
+---------------------------------------------------
+	variables can be injected into groups using group_name:vars in inventory	
+	
+	cd variables 
+	ansible-playbook -i group-vars group-vars-test.yml
+-------------------------------------------------------	
 
 
 
@@ -369,4 +376,4 @@ Child groups have a couple of properties to note:
 ----------------------------------
 ----------------------------------
 
-
+Additional Good reference: https://www.golinuxcloud.com/ansible-variables/
