@@ -1,0 +1,10 @@
+---
+- name: Install python in target node with ansible
+  hosts: all
+  become: true
+  gather_facts: no
+  pre_tasks:
+  - name: install python
+    raw: 'cat < /tmp/upgrade-python.sh'
+    args:
+      executable: /bin/bash

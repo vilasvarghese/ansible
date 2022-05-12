@@ -1,0 +1,17 @@
+---
+- name: "DEBUG INVENTORY"
+  hosts: "all"
+  gather_facts: False
+  strategy: "free"
+  connection: "network_cli"
+  tasks:
+    - name: "10010: GET DEVICE NAMES"
+      debug:
+        msg: "{{ inventory_hostname }}"
+
+    - name: "10015: GET DEVICE OS"
+      debug:
+        msg: "{{ ansible_network_os }}"
+...
+#free: allows each host to run until the end of the play as fast as it can.
+#each host is executed till the end before other one picks up.

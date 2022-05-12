@@ -2,7 +2,6 @@
 - name: test play
   hosts: webservers
   serial: 2
-#  serial: "30%" - 30 percentage hosts will be executed together
   gather_facts: False
 
   tasks:
@@ -10,4 +9,3 @@
       command: hostname
     - name: second task
       command: hostname
-      

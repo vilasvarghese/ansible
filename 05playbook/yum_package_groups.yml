@@ -25,7 +25,8 @@ Recommend: always using the "update_cache: true" parameter when
 ------------------------------------------------------------------------------------------
 N.B:  To manage yum repositories, use the yum_repository module. is different from yum module
 
-Also, there are difference in package name between yum and apt. so your yml's are not going to be o/s independent.
+Also, there are difference in package name between yum and apt.
+    so your yml's are not going to be o/s independent.
 
 e.g. package name for apache is "apache" in apt and "httpd" in yum.
 

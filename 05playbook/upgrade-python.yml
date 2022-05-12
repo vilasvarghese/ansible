@@ -1,0 +1,21 @@
+---
+- name: Install python in target node with ansible
+  hosts: all
+  become: true
+  gather_facts: no
+  tasks:
+  - name: copy upgrade-python code
+    copy:
+      src: /home/vilas/tmp/u.sh
+      dest: /home/vilas/u.sh
+      owner: vilas
+      group: vilas
+      mode: u=rwx,g=r,o=r
+  - name: install python
+    raw: 'cat < /home/vilas/u.sh'
+    args:
+      executable: /bin/bash
+    register: upgrade_result
+  - name: debug result
+    debug:
+      msg: "{{ upgrade_result }}"

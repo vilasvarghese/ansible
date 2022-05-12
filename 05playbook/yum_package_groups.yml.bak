@@ -180,9 +180,53 @@ Install package groups with the yum
     These are the package groups available on CentOS 7.
         yum group list ids command:
 ------------------------------------------------------------------------------------------
+Output
 
+Available Environment Groups:
+   Minimal Install (minimal)
+   Compute Node (compute-node-environment)
+   Infrastructure Server (infrastructure-server-environment)
+   File and Print Server (file-print-server-environment)
+   Cinnamon Desktop (cinnamon-desktop-environment)
+   MATE Desktop (mate-desktop-environment)
+   Basic Web Server (web-server-environment)
+   Virtualization Host (virtualization-host-environment)
+   Server with GUI (graphical-server-environment)
+   GNOME Desktop (gnome-desktop-environment)
+   KDE Plasma Workspaces (kde-desktop-environment)
+   Development and Creative Workstation (developer-workstation-environment)
+Available Groups:
+   Cinnamon (cinnamon-desktop)
+   Compatibility Libraries (compat-libraries)
+   Console Internet Tools (console-internet)
+   Development Tools (development)
+   Educational Software (education)
+   Electronic Lab (electronic-lab)
+   Fedora Packager (fedora-packager)
+   General Purpose Desktop (general-desktop)
+   Graphical Administration Tools (graphical-admin-tools)
+   Haskell (haskell)
+   Legacy UNIX Compatibility (legacy-unix)
+   MATE (mate-desktop)
+   Milkymist (milkymist)
+   Scientific Support (scientific)
+   Security Tools (security-tools)
+   Smart Card Support (smart-card)
+   System Administration Tools (system-admin-tools)
+   System Management (system-management)
+   TurboGears application framework (turbogears)
+   Xfce (xfce-desktop)
+Done
 ------------------------------------------------------------------------------------------
+See the packages in the group with yum group info $PACKAGE, e.g. 
+    yum group info development: #development is a package from the output above.
+    To install a package
 ------------------------------------------------------------------------------------------
+- name: ensure development tools are installed
+  yum:
+    name: "@development"
+    state: present
+  become: true
 ------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------
 

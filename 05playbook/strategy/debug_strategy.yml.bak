@@ -1,0 +1,11 @@
+---
+- name: "DEBUG INVENTORY"
+  hosts: "all"
+  gather_facts: False
+  strategy: "debug"
+  connection: "network_cli"
+  tasks:
+    - name: "10010: GET DEVICE NAMES"
+      debug:
+        msg: "{{ inventory_hostnames }}"
+      debugger: on_failed

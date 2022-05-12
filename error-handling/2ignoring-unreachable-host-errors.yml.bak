@@ -1,0 +1,7 @@
+#Ignoring unreachable host errors
+- name: This executes, fails, and the failure is ignored
+  ansible.builtin.command: /bin/true
+  ignore_unreachable: yes
+
+- name: This executes, fails, and ends the play for this host
+  ansible.builtin.command: /bin/true
