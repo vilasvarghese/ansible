@@ -34,6 +34,7 @@ centos
 ubuntu
 	usermod -aG sudo <yourname> 
 	usermod -aG sudo vilas
+	https://code-maven.com/enable-ansible-passwordless-sudo
 	visudo 
 		change 
 			%sudo   ALL=(ALL:ALL) ALL
