@@ -1,0 +1,5 @@
+[centos]
+cent1 ansible_host=<private ip> ansible_user=vilas  ansible_ssh_private_key_file=/home/vilas/.ssh/id_rsa
+
+[ubuntu]
+ubuntu1 ansible_host=<private ip> ansible_user=vilas  ansible_ssh_private_key_file=/home/vilas/.ssh/id_rsa

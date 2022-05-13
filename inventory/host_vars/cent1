@@ -1,0 +1,5 @@
+ansible_user: ullas
+ansible_ssh_private_key_file: /home/ullas/.ssh/id_rsa
+ansible_connection: ssh
+
+#This may not work - but if you do ansible-inventory --list you can see how ansbile interpolates

@@ -7,6 +7,11 @@ Introduction to inventory
 	1. List inventory based on default setup 
 		ansible-inventory --list
 		Default inventory files: /etc/ansible/hosts
+		repeat this command after adding inventory with parameters
+
+
+		To list host
+			$ ansible groupname -i hosts --list-hosts
 		
 	2. List inventory based on inventory1 file 
 		ansible-inventory -i inventory1 --list	
@@ -17,7 +22,9 @@ Introduction to inventory
 	3. Ping nodes from a specific list
 		Execute ping module on all hosts listed in your custom inventory1 file.
 		ansible all -i inventory1 -m ping
-	
+		Ping a specific host
+		ansible <host alias> -m ping
+		ansible cent1 -m ping
 
 	
 Groups 
@@ -120,6 +127,7 @@ Host Aliases
 #host may not work without an alias
 #More details of ansible can be found https://docs.ansible.com/ansible/2.4/ansible-inventory.html
 
+N.B: In metagroups you cannot mention host aliases
 
 Host Variables
 --------------
@@ -157,9 +165,18 @@ to pull variables per host group and run Ansible plays/tasks against hosts.
 	group_vars/all is used to set variables that will be used for every host that Ansible is ran against.	
 
 
+Instruction for folder assignment
+---------------------------------
+	create a folder called group_vars
+	create a file with group name
+	give the properties in key: value format
+	#ansible-inventory --list
+
 
 ---------------------------------------------------
-	variables can be injected into groups using group_name:vars in inventory	
+	variables can be injected into groups using 
+		group_name:vars in inventory	
+		group_name folder
 	
 	cd variables 
 	ansible-playbook -i group-vars group-vars-test.yml
@@ -376,4 +393,9 @@ Child groups have a couple of properties to note:
 ----------------------------------
 ----------------------------------
 
-Additional god reference: https://www.golinuxcloud.com/ansible-variables/
+Additional Good reference: https://www.golinuxcloud.com/ansible-variables/
+
+Tips and tricks: https://docs.ansible.com/ansible/latest/user_guide/playbooks_best_practices.html
+
+if you have different user than root for root user, then it can be updated in the 
+	ansible.cfg file

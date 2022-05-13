@@ -6,6 +6,9 @@
       command: hostname
       register: result
     - set_fact:
-        hostname: "{{ result.stdout }}"
+        hostname1: "{{ result.stdout }}"
     - debug:
-        var: hostname
+        var: hostname1
+        
+#set_facts allows us to set facts
+#https://docs.ansible.com/ansible/2.9/modules/set_fact_module.html#examples        

@@ -54,17 +54,8 @@ Ansible retrieves facts about
 3. 	Host Variables
 	--------------
 	There's two possibilities to define host vars
-		In the inventory file
+		In the inventory file along with host
 		In the host_vars folder (following Ansible best practices)
-	
-	In the inventory file
-	----------------------
-	Setting slow: true for the host webserver
-
-	- host: webserver
-	  hostvars:
-		slow: true
-	  groups: [group_1, datacenter_1]
 
 	
 	

@@ -136,9 +136,33 @@ tasks:
         - include_tasks: mytasks.yml
       any_errors_fatal: true
 -----------------------------------------------
+-----------------------------------------------
+---
+- hosts: load_balancers_dc_a
+  any_errors_fatal: true
 
+  tasks:
+    - name: Shut down datacenter 'A'
+      ansible.builtin.command: /usr/bin/disable-dc
 
+- hosts: frontends_dc_a
 
-	  
+  tasks:
+    - name: Stop service
+      ansible.builtin.command: /usr/bin/stop-software
+
+    - name: Update software
+      ansible.builtin.command: /usr/bin/upgrade-software
+
+- hosts: load_balancers_dc_a
+
+  tasks:
+    - name: Start datacenter 'A'
+      ansible.builtin.command: /usr/bin/enable-dc
+
+	-----------------------------------------------  
 	
-	
+---
+- hosts: webservers
+  max_fail_percentage: 30
+  serial: 10

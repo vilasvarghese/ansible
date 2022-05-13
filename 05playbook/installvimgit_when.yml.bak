@@ -1,9 +1,0 @@
----
-- hosts: servers
-  become: true
-  tasks:
-  - name: Install Package
-    yum: name=vim,git state=latest
-    #User needs to be root because this require root privilege to install
-    when: ansible_distribution in ["CentOS", "RHEL"] #need to validate...ansible all -m gather_facts --limit <ip> | grep ansible_distribution
-    

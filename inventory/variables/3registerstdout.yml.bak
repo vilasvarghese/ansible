@@ -1,11 +1,11 @@
 - name: Retrieve hostname
-#hosts can be group or host alias or a combination as given below
   hosts:
-    - ubuntu1
-    - centos
+    - localhost
   tasks:
     - name: Retrieve the hostname
       command: hostname
       register: result
+    - set_fact:
+        hostname: "{{ result.stdout }}"
     - debug:
-        var: result
+        var: hostname

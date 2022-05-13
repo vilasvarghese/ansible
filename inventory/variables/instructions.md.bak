@@ -22,7 +22,10 @@ Ansible retrieves facts about
 		ansible -i hosts all -m debug -a "var=hostvars[inventory_hostname]"
 		ansible localhost -m debug -a "var=hostvars[inventory_hostname]"
 
-	Store the return value of the command? We need to save the result of the hostname command in a variable, and then we need to print this variable to the console
+	We can store the return value of the command
+		save the result of the hostname command in a variable, 
+		then print this variable to the console
+		
 		ansible-playbook 2registerfacts.yml
 
 	
@@ -51,7 +54,7 @@ Ansible retrieves facts about
 3. 	Host Variables
 	--------------
 	There's two possibilities to define host vars
-		In the inventory file
+		In the inventory file along with host
 		In the host_vars folder (following Ansible best practices)
 	
 	In the inventory file

@@ -160,9 +160,32 @@ tasks:
     - name: Start datacenter 'A'
       ansible.builtin.command: /usr/bin/enable-dc
 
-	-----------------------------------------------  
+-----------------------------------------------  
 	
 ---
 - hosts: webservers
   max_fail_percentage: 30
   serial: 10
+  
+  
+In a block we can resue
+
+-----------------------------------------------  
+ tasks:
+ - name: Handle the error
+   block:
+     - name: Print a message
+       ansible.builtin.debug:
+         msg: 'I execute normally'
+
+     - name: Force a failure
+       ansible.builtin.command: /bin/false
+
+     - name: Never print this
+       ansible.builtin.debug:
+         msg: 'I never execute, due to the above task failing, :-('
+   rescue:
+     - name: Print when errors
+       ansible.builtin.debug:
+         msg: 'I caught an error, can do stuff here to fix it, :-)'  
+-----------------------------------------------  		 
