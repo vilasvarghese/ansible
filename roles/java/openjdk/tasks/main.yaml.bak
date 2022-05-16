@@ -1,6 +1,5 @@
 ---
 - name: Ensure latest {{ openjdk_package_name }} is installed
-  become: yes
   yum:
     name: "{{ openjdk_package_name }}"
     state: latest

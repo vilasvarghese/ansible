@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+
+    - name: Deploy Nginx
+      community.docker.docker_container:
+        name: nginx
+        image: nginx
+        ports:
+          - "81:80"
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+          - nginx_data:/data
+        restart_policy: always

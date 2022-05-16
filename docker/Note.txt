@@ -1,3 +1,27 @@
+sudo apt remove ansible
+sudo yum remove ansible
+pip3 uninstall ansible
+
+
+python3.10 -m pip install ansible
+python3.10 -m pip install --upgrade ansible
+
+ansible-galaxy collection install community.docker
+
+
+ansible.cfg
+---------------------------
+
+host_key_checking = false# if you don't want the initial do you want to connect message
+deprecation_warnings = false # if you don't want warning of deprecation
+remote_user = vilas # to prove ansible_user here
+private_key_file = private_key location
+
+---------------------------
+
+
+
+
 ping docker
 install docker
 pip3 install docker

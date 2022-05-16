@@ -5,7 +5,10 @@
 2. Multiple handler
 	ansible-playbook multiple_handler.yaml
 	
-Handlers are just like normal tasks in an Ansible playbook but they run only when if the Task contains a “notify” directive. It also indicates that it changed something.
+Handlers 
+	normal tasks in an Ansible playbook 
+	run ONLY when another Tasks notifies (“notify” directive). 
+	It also indicates that it changed something.
 
 A handler is called at the end of playbook by default
 	so even if a handler is notified multiple times
@@ -18,8 +21,8 @@ A handler is called at the end of playbook by default
 
 Name of a handler should be unique
 	This is used for calling it by notifier.
-If two handlers have the same name, only the one will run. 
-	Which is defined later in playbook.
+If two handlers have the same name, only one defined latter will run. 
+
 
 You can mention a variable in handler’s tasks section. 
 	But avoid using variables in name of a handler. 

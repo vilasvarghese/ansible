@@ -134,18 +134,18 @@ tempowner: vilas.varghese@gmail.com
 
 
 mkdir host_vars
-cat /etc/ansible/host_vars/ubuntu1
+cat host_vars/ubuntu1
 ----------------------------------
 myhostvar: This is ubuntu machine
 ----------------------------------
 
 
-cat /etc/ansible/host_vars/cent1
+cat host_vars/cent1
 ----------------------------------
 myhostvar: This is centos1 machine
 ----------------------------------
 
-cat /etc/ansible/host_vars/cent2
+cat host_vars/cent2
 ----------------------------------
 myhostvar: This is centos2 machine
 ----------------------------------

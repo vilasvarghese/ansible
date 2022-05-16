@@ -305,12 +305,6 @@ ansible-playbook ping.yml --vault-password-file /usr/local/vault/.vault_password
 
 
 
-
-
-
-
-
-
 		
 		Alternatives
 		

@@ -10,8 +10,8 @@
         notify:
           - start nginx
 
-      - name: Upload the default index.html file
-        copy: src=index.html dest=/usr/share/nginx/www/ mode=0644
+#      - name: Upload the default index.html file
+#        copy: src=index.html dest=/usr/share/nginx/www/ mode=0644
 
   handlers:
       - name: start nginx

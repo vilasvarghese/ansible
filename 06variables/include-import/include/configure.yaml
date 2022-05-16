@@ -1,7 +1,0 @@
----
-# ./roles/my_role/tasks/configure.yaml
-- name: configure the application
-  copy: 
-    src: my_app.conf
-    dest: /etc/my_app.conf
-  become: true

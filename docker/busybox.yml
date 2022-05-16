@@ -1,0 +1,11 @@
+- name: Play name
+  hosts: all
+  tags: your tag
+  gather_facts: yes
+  tasks:
+    - name: Create container
+      docker_container:
+         name: mydata
+         image: busybox
+         volumes:
+            - /data
