@@ -35,14 +35,4 @@ With reference to inventory.yaml in the current directory.
 5. 	A combination of percentage and count combination is also supported
 	ansible-play -i inventory.yaml combination_playbook.yaml
 	
-6. Debug strategy
-		Execute anyplaybook that fail
-		while it fails it waits for us to debug
-		
-	dir()
-	task_vars.keys()
-	task_vars.get("ansible_connection")
-	 exit()
-	 
-	 
-	 
+	

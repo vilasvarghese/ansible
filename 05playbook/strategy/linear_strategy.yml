@@ -1,0 +1,15 @@
+- 
+  name: 'linear strategy'
+  hosts: all
+  strategy: linear
+  become: yes
+  serial: 2
+  tasks:
+    - name: Create directory
+      file: path=/tmp/vilas state=directory mode=775
+    
+    - name: 'cretae file'
+      command: touch /tmp/task2.txt
+      
+    - name: 'Create User'
+      user: name=vilas2 groups=root shell=/bin/bash      

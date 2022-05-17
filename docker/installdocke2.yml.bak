@@ -48,6 +48,6 @@
     - name: Install Python docker compose
       pip:
         name: 
-        - docker-compose
-        - docker
-        - requests
+		  - docker-compose
+		  - docker
+		  - requests
