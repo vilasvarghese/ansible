@@ -1,3 +1,5 @@
+#Reference: https://github.com/mdklatt/ansible-python3-role
+
 ---
 - name: install Docker
   hosts: centos
@@ -36,18 +38,25 @@
         enabled: true
         state: started
         
-    - name: Install Docker-Compose
-      yum:
-        name: docker-compose
+#    - name: Install Docker-Compose
+#      yum:
+#        name: docker-compose
 
-    - name: Install python module
+    - name: Install python latest module
       yum:
-        name: python3-pip
+        name: 
+          - python-setuptools
+          - python3
+          - python3-devel
+          - python3-pip        
         state: latest
         
     - name: Install Python docker compose
       pip:
         name: 
-        - docker-compose
+#        - docker-compose
         - docker
         - requests
+        - virtualenv
+      state: present
+      executable: pip3

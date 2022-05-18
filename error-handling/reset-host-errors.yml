@@ -1,0 +1,16 @@
+#Ansible automatically marks hosts as NOTREACHABLE
+#Reset it using meta: clear_host_errors
+- hosts: all
+  tasks:
+    - set_fact:
+        was_accessible: "up"
+
+    - meta: clear_host_errors
+
+    - debug:
+        msg: "Hello"
+
+    - when:
+        - was_accessible is defined
+      debug:
+        msg: "Hello again, I am up."

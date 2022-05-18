@@ -1,0 +1,26 @@
+---
+- name: exception handling in ansible
+  hosts: ubuntu
+  become: true
+  tasks:
+    - name: install and start the apache2 service
+      block:
+        - name: install apache2
+          apt: 
+            name: apache2
+            update_cache: true
+            state: present
+   
+        - name: enable and restart the apache2 service
+          service:
+            name: apache2
+            enabled: true
+            state: restarted
+
+      rescue: 
+        - debug: 
+            msg: "Hi!!! I will be executed if the block fails"
+ 
+      always:
+        - debug: 
+             msg: "Hi!!! I will always execute."

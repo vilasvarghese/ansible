@@ -1,0 +1,16 @@
+- name: Web page fetcher
+  hosts: all
+
+  tasks:
+    - name: Fetch webpage
+      uri:
+        url: https://somewebsite.com
+        return_content: true
+     register: output
+
+    - name: Check Content
+      debug:
+        msg: "Checking content..."
+    failed_when:
+      - '"Some Content" not in output.content'
+      - '"Some other content" not in output.content'

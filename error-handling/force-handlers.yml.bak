@@ -1,0 +1,7 @@
+#If task fails on a host handlers will not run
+#1. Using — force-handlers command line option
+#2. Including force_handlers: True in a play
+#3. Setting force_handlers=True in ansible.cfg configuration file.
+
+- hosts: all
+  force_handlers: true
