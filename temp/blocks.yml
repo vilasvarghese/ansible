@@ -13,7 +13,7 @@
 #           src: templates/src.j2
 #           dest: /etc/foo.conf
 
-       - name: Start service bar and enable it
+       - name: Start service apache and memcached and enable it
          ansible.builtin.service:
            name: 
            - httpd

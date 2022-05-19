@@ -170,3 +170,6 @@ Installing software using yum/apt commands.
 		removed: 
 		got: 
 		Vilas: anyother version number: upgrade to that version.
+		
+		
+	A good reference: https://www.middlewareinventory.com/blog/ansible-ad-hoc-commands/	

@@ -9,5 +9,7 @@
 
       - name: Use the variable in conditional statement
         ansible.builtin.shell: mkdir /home/vilas/test123
-        when: motd_contents.stdout.find('hi') != -1	
+        when: 
+            - (motd_contents.stdout.find('hi') != -1 or ansible_user == 'vilas')
+            
 		#Checking the condition if it satisfies.

@@ -92,8 +92,8 @@ inventory = inventory.yml
 	
 13. See the setup. This will show the hardware details of the box.
 	a. See host hardware details 
-		ansible centos -m setup
-		ansible ubuntu -m setup
+		ansible centos -i inventory.yml -m setup
+		ansible ubuntu -i inventory.yml -m setup
 		#host definition in inventory file: host2 ansible_ssh_host=192.168.176.143
 	
 	b. See group hardware details

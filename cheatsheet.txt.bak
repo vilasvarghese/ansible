@@ -1,9 +1,6 @@
 Ansible Commands
 
 
-$ ansible-playbook -i hosts my-book.yml --check
-$ ansible freebsd -i hosts --list-hosts
-
 ansible --version
 ansible -m ping all
 ansible all -a "whoami"

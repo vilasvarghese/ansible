@@ -1,15 +1,7 @@
-Create a role in aws
+WIP
 
-	While creating EC2 instance
-	------------------------------------------
-		Didn't work
-		Create a new role
-			search for ec2fullaccess
-			select AmazonEC2FullAccess
-			Give tag: EC2FullAccess -> Yes
-	------------------------------------------	
-	Proceed with instance creation
-			Give Tags
-				Name: ami1
-				
+
+Reference: 
+	https://aws.amazon.com/blogs/apn/getting-started-with-ansible-and-dynamic-amazon-ec2-inventory-management/
+	
 				

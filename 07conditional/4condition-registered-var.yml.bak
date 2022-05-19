@@ -8,6 +8,6 @@
         register: motd_contents #registering the output
 
       - name: Use the variable in conditional statement
-        ansible.builtin.shell: echo "motd contains the word hi"
+        ansible.builtin.shell: mkdir /home/vilas/test123
         when: motd_contents.stdout.find('hi') != -1	
 		#Checking the condition if it satisfies.

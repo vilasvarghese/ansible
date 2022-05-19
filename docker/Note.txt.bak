@@ -1,6 +1,3 @@
-
-
-
 sudo apt remove ansible
 sudo yum remove ansible
 pip3 uninstall ansible

@@ -9,12 +9,22 @@
           command: "ls -l /usr/"
 
         - name: List root partition content
-          command: "ls -l /root/"
+          command: "ls -l /tmp/does-not-exist/"
 
         - name: List bin directory content
           command: "ls -l /bin/"
        become: yes
        ignore_errors: yes
+       
+       rescue:
+        - name: Rescue block (perform recovery)
+          debug:
+            msg: "Something went wrong, cleaning up.."
+
+       always:
+        - name: This will execute always
+          debug:
+            msg: "I will execute even in failure scenario"
 
      - name: List ansible user's home directory content
        command: "ls -l ~/"
