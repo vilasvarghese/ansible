@@ -1,0 +1,9 @@
+---
+- name: set SELinux to enforcing
+  hosts: localhost
+  become: yes
+  tasks:
+  - name: set SElinux to enforcing
+    ansible.posix.selinux:
+      policy: targeted
+      state: enforcing

@@ -1,0 +1,7 @@
+$ ansible windows -i inventory -m win_ping 
+$ ansible windows -i inventory -m setup
+$ ansible windows -i inventory -m raw -a "dir"
+$ ansible windows -i inventory -m win_service -a "name=spooler"
+$ ansible windows -i inventory -m win_service -a "name=spooler state=stopped"
+$ ansible windows -i inventory -m win_service -a "name=spooler"
+$ ansible windows -i inventory -m win_feature -a "name=Telnet-Client state=present"

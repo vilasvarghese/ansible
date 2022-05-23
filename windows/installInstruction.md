@@ -139,3 +139,43 @@ Remove-Item -Path WSMan:\localhost\Listener\* -Recurse -Force
 Get-ChildItem -Path WSMan:\localhost\Listener | Where-Object { $_.Keys -contains "Transport=HTTPS" } | Remove-Item -Recurse -Force
 
 
+
+
+On the master machine
+
+	pip3 install pywinrm
+
+	
+	python3.10 -m pip install --upgrade pip
+	python3.10 -m pip install pywinrm
+	python3.10 -m pip install ansible
+	
+	python3 -m pip install --upgrade pip
+	python3 -m pip install pywinrm
+	python3 -m pip install ansible
+
+
+Setup 
+
+
+inventory 
+
+[win]
+<private ip> 
+172.16.2.6 
+
+[win:vars]
+ansible_user=Administrator
+ansible_password=<my pwd>
+ansible_port=5986
+ansible_connection=winrm
+ansible_winrm_transport=basic
+ansible_winrm_server_cert_validation=ignore
+
+
+
+
+Verify 
+
+ansible win -m win_ping
+
