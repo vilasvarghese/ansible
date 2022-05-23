@@ -1,5 +1,0 @@
-- hosts: servers
-  become: true
-  tasks:
-  - name: Create file named vilas.txt
-    file: path=/home/centos/vilas.txt state=touch

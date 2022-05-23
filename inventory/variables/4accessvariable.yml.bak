@@ -1,8 +1,0 @@
-- name: Retrieve hostname
-  hosts:
-    - centos
-  tasks:
-    - debug:
-        var: "{{ hostvars[ansible_user] }}"        
-#set_facts allows us to set facts
-#https://docs.ansible.com/ansible/2.9/modules/set_fact_module.html#examples        
