@@ -1,5 +1,5 @@
 ---
-- hosts: servers
+- hosts: all
   become: true
   tasks:
   - name: Date and Time Example in Ansible
