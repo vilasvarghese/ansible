@@ -33,5 +33,4 @@ ansible-playbook playbook.yml -K
 
 
 
-
 debug: sudo netstat -tunlp
