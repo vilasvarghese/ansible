@@ -1,0 +1,36 @@
+java 11 is a dependency for jenkins hence
+	sudo yum -y install java-11-openjdk java-11-openjdk-devel
+N.B: If you already have java 8 do alternatives and select jenkins.
+	alternatives --config java 
+
+
+
+ansible-galaxy install geerlingguy.jenkins -p ./roles/
+
+create playbook.yml as follows
+-------------------------------------------
+- name: Install jenkins
+  hosts: localhost
+  become: yes
+  roles:
+    - geerlingguy.jenkins
+-------------------------------------------	
+	
+ansible-playbook playbook.yml -K	
+
+
+1. Access jenkins
+2. Install default plugin
+3. Install ansible plugin
+4. Global Tool configuration
+	Ansible
+		name: any name
+		path: which ansible
+5. https://devopsbuzz.com/run-ansible-playbook-from-jenkins/
+	ensure give a github url and keep the playbook inside repo.
+	
+
+
+
+
+debug: sudo netstat -tunlp

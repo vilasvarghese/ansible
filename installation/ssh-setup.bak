@@ -58,4 +58,3 @@ Reference
 https://community.cloudera.com/t5/Support-Questions/how-to-create-password-less-ssh-between-two-AWS-EC2/td-p/109442
 	
 	
-ansible_ssh_private_key_file=/home/vilas/.ssh/id_rsa

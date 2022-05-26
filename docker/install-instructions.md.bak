@@ -26,10 +26,7 @@
 3. On server verify the ansible and python version
 	docker should work with ansible 2.11.11 pthon 3.6.8
 	
-	If the version is old 
-		python3.10 -m pip install ansible
-		python3.10 -m pip install --upgrade ansible
-		
-		or remove and reinstall
+	python3.10 -m pip install ansible
+	python3.10 -m pip install --upgrade ansible
 	
-
+	or remove and reinstall

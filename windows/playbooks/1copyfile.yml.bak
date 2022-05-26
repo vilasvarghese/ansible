@@ -3,6 +3,6 @@
   tasks:
   - name: Copy File
     win_copy:
-      src: C:\abc.txt
+      src: abc.txt
       dest: C:\ansible_examples\
       remote_src: yes

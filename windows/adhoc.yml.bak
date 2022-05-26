@@ -1,8 +1,7 @@
 $ ansible windows -m win_ping 
 $ ansible windows -m setup
 $ ansible windows -m raw -a "dir"
-#work with services
 $ ansible windows -m win_service -a "name=spooler"
 $ ansible windows -m win_service -a "name=spooler state=stopped"
-#install/uninstall 
+$ ansible windows -m win_service -a "name=spooler"
 $ ansible windows -m win_feature -a "name=Telnet-Client state=present"

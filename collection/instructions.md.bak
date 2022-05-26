@@ -640,7 +640,7 @@ The galaxy.yml file
 
 	c. cd plugins/
 		mkdir modules
-		cd modules
+
 vi demo_hello.py
 ----------------------------------------------------------------------------
 #!/usr/bin/python

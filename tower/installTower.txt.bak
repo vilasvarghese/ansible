@@ -130,8 +130,8 @@ Here we are using Web UI
 https://linuxhint.com/install_configure_ansible_rhel8/		
 ansible on rhel 8
 
-http://redhatgov.io/workshops/ansible_automation/exercise2.0/
-https://computingforgeeks.com/install-and-configure-ansible-tower-on-centos-rhel/
+Lab: 
+https://goetzrieger.github.io/ansible-tower-getting-started/2-cred/
 
 To enable epel for rhel
 https://linuxconfig.org/redhat-8-epel-install-guide
@@ -139,28 +139,3 @@ dnf install epel-release -y # may be already there by now.
 
 Known issues.
 	https://docs.ansible.com/ansible-tower/2.4.0/html/installandreference/known_issues.html
-	
-	
-Lab: 
-https://goetzrieger.github.io/ansible-tower-getting-started/2-cred/
-
-	Add inventory
-		Click on inventories
-		Hosts Group
-			name: 
-		Select group
-			hosts button
-		
-		Create multiple groups if required.
-		
-	Create a template and connect between inventories and users
-		Use existing project or a create a new project
-		
-		
-		Create Template
-			JOb Template
-			Name: 
-			Type: Run
-			Inventory: Select inventory
-			Project: 
-		

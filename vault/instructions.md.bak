@@ -311,9 +311,7 @@ ansible-playbook ping.yml --vault-password-file /usr/local/vault/.vault_password
 
 
 
-Additional references
-	1. https://www.redhat.com/sysadmin/ansible-playbooks-secrets
-	2. https://docs.ansible.com/ansible/latest/user_guide/vault.html
+
 
 		
 		Alternatives
