@@ -20,6 +20,10 @@ curl -O https://www.openssl.org/source/openssl-1.1.1c.tar.gz
 sudo tar -xf openssl-1.1.1c.tar.gz
 cd openssl-1.1.1c
 sudo ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl shared zlib
+
+yum update -y
+yum -y install gcc
+
 sudo make
 sudo make test
 sudo make install

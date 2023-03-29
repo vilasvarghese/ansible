@@ -9,6 +9,6 @@
       #ansible localhost -m gather_facts | grep ansible_os_family
 
     - include_vars: vars/vars-Ubuntu.yml
-      when: ansible_os_family == 'Ubuntu'
+      when: ansible_os_family == 'Ubuntu' or ansible_os_family == 'Debian'  
 
     - debug: var=redis_package

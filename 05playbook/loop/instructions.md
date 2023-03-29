@@ -2,7 +2,8 @@
 
 0. Simple playbook duplicate and repeat a lot. Look the below code.
 
-	ansible-playbook -i inventory.yaml no_loop.yaml
+	ansible-playbook -i inventory.yaml no_loop.yaml  -K
+	ansible-playbook no_loop.yaml  -K
 
 	The same playbook can be written using the loop directive. 
 	The loop directive executes the same task multiple times. 
@@ -18,10 +19,12 @@
 	Using loop
 	----------
 		ansible-playbook -i inventory.yaml  create_user_in_loop.yaml -K
+		ansible-playbook create_user_in_loop.yaml -K
 	
 	Using with_*
 	------------
 		ansible-playbook  -i inventory.yaml create_user_using_with.yaml
+		ansible-playbook  create_user_using_with.yaml -K
 	
 	loop is relatively new entry and both are similar
 	with_ keywords rely on Lookup Plugins - even items is a lookup.
@@ -66,10 +69,12 @@ loop:
 		The loop index begins from item.0 and the value from item.1
 
 	a) ansible-playbook -i inventory.yaml loop_with_index.yaml
+		ansible-playbook loop_with_index.yaml
 
 	b) Compare create_user_using_dictionary.yaml and loop_with_index.yaml
 
 	c) ansible-playbook loop_with_index_playbook.yaml
+	
 
 4. We can add to index 
 	ansible-playbook loop_index_add_playbook.yaml

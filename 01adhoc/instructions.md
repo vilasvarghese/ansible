@@ -33,21 +33,22 @@ ansible -i inventory.yml centos -m copy -a "src=abc.txt dest=/tmp/"
 		sudo yum remove git
 
 	Install git
-	ansible -i inventory.yml centos -m yum -a "name=git state=present" --become
-	ansible -i inventory.yml ubuntu -m apt -a "name=git state=present" --become -kK
+	ansible -i inventory.yml centos -m yum -a "name=git state=present" --become -kK
+	ansible -i inventory.yml ubuntu -m apt -a "name=git state=present" --become -kK #pwd will be prompted
+	ansible -i inventory.yml ubuntu -m apt -a "name=openjdk-8-jdk state=present" --become -kK	
 		#-k, --ask-pass: ask for connection password #ignore if mentioned in inventory
 		#-K, --ask-become-pass: ask for privilege escalation password
 	
 		on the centos machine
 			git 
 	
-	 ansible -i inventory.yml centos -b -m git -a "repo=https://github.com/vilasvarghese/ansible.git dest=/home/centos/tmp version=HEAD"
+	ansible -i inventory.yml centos -b -m git -a "repo=https://github.com/vilasvarghese/ansible.git dest=/home/centos/tmp version=HEAD"
 	
 		remove it from centos box
 			sudo rm -rf tmp/
 	
 5. Remove git
-	ansible -i inventory.yml centos -m yum -a "name=git state=removed" --become
+	ansible -i inventory.yml centos -m yum -a "name=git state=absent" -b -kK
 		on the centos machine
 			git 
 
@@ -58,13 +59,17 @@ inventory = inventory.yml
 ----------------------------------------------
 	
 	
-	ansible centos -m ping
+	
 	
 	
 7. 	ansible all --list-hosts
+	ansible <host> -m ping
+	ansible host1 -m ping
+
 
 8. ansible all -m gather_facts
 	ansible all -m gather_facts --limit <ip>
+	ansible all -m gather_facts --limit hostname
 	ansible all -i inventory.yml -m gather_facts
 
 9. Execute any shell command 
@@ -156,6 +161,9 @@ Other useful commands
 Installing software using yum/apt commands.
 	ansible <group> -m yum -a "name=git state=present" --become
 	ansible servers -m yum -a "name=httpd state=latest" -b
+	ansible servers -m apt -a "name=apache2 state=latest" -b
+	
+	
 	
 	ansible <host as mentioned in inventory>  -m yum -a "name=httpd state=latest" -b
 	e.g.

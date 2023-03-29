@@ -11,9 +11,21 @@ Pre-requisite
 TBD: 40 GB Hard disk CentOS 7 or RHEL 7 64X box
 
 
+---------------------------------------------------------------
+Ubuntu
 
-
-
+tower installation is supported only on RHEL and centos.
+	according to the error i received while attempting installation
+	
+	
+"RedHat 9.1 is not a supported OS for a Tower installation.  Supported OSes include Red Hat Enterprise Linux 7.7+ and CentOS 7.7+."}
+	
+	try: CENTOS 7.9.2009 with ECS agent
+ami-087a0498a2f036277
+---------------------------------------------------------------
+new reference: 
+	http://redhatgov.io/workshops/ansible_automation/exercise2.0/
+---------------------------------------------------------------
 
 scp -i vilas.pem ansible-automation-platform-setup-bundle-2.1.0-1.tar.gz centos@ec2-3-93-45-248.compute-1.amazonaws.com:/home/centos/
 
@@ -25,7 +37,7 @@ Ansible exists in two standards:
 	Ansible Tower – Provides management, visibility, job scheduling, credentials, RBAC, auditing/compliance e.t.c.
 	By installing Ansible Tower, Ansible core will be installed as a dependency. Below are the steps you’ll use to install Ansible Tower on a CentOS 7 server.
 
-
+Refer below for ubuntu
 
 ssh to the box
 sudo su
@@ -164,3 +176,20 @@ https://goetzrieger.github.io/ansible-tower-getting-started/2-cred/
 			Inventory: Select inventory
 			Project: 
 		
+	Verify if tower is running 	
+		ansible-tower-service status
+		
+		any error
+		sudo ./setup --help
+		sudo ./setup -k
+		
+------------------------------------------------------
+Ubuntu
+
+tower installation is supported only on RHEL and centos.
+	according to the error i received while attempting installation
+	
+	
+CENTOS
+-----------
+yum install python3

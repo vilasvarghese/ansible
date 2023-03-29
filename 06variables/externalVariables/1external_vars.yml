@@ -1,13 +1,12 @@
----
-- name: Using vars_files
 - hosts: all
-  remote_user: root
+  remote_user: vilas
   vars:
     favcolor: blue
   vars_files:
-    - /vars/external_vars.yml
+    - ./vars/external_vars.yml
 
   tasks:
 
   - name: This is just a placeholder
-    ansible.builtin.command: /bin/echo foo
+    debug:
+      msg: "{{foo}}"

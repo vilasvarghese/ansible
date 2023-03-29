@@ -6,6 +6,9 @@ Introduction to inventory
 -------------------------
 	1. List inventory based on default setup 
 		ansible-inventory --list
+		#find default inventory executing 
+			ansible --version 
+			check what is the inventory configured in the configuration file mentioned (e.g. ansible.cfg)
 		Default inventory files: /etc/ansible/hosts
 		repeat this command after adding inventory with parameters
 
@@ -22,9 +25,27 @@ Introduction to inventory
 	3. Ping nodes from a specific list
 		Execute ping module on all hosts listed in your custom inventory1 file.
 		ansible all -i inventory1 -m ping
+		ansible centos -i 1ansibleuser.yaml - m ping
+		
 		Ping a specific host
 		ansible <host alias> -m ping
 		ansible cent1 -m ping
+
+
+Inventory can take options like
+	
+Using users 
+-----------
+Modify 1ansibleuser.yaml
+ansible all -i 1ansibleuser.yaml -m ping
+
+Using users with private key
+----------------------------
+Modify 1ansibleuser.yaml
+ansible all -i 2ansibleuserkey.yaml -m ping
+
+
+
 
 	
 Groups 
@@ -94,6 +115,7 @@ one.example.com exists in the
 	Refer: inventory2
 	Example of grouping inventory
 		ansible-inventory -i groupinventory --list
+		ansible all -i 4groupinventory -m ping
 
 Group of groups
 ---------------
@@ -106,6 +128,7 @@ Group of groups
 
 	Select a  metadata 
 		ansible-inventory -i metagroup --graph production
+		ansible-inventory -i metagroup --graph development
 
 	 
 Host Aliases

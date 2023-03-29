@@ -49,7 +49,7 @@ Creating a Role
 			 tasks file 
 				contains only steps that will be performed when we use the Apache role.
 
-			We need src=index.html and src=vhost.tpl - We will get to those latter..
+				We need src=index.html and src=vhost.tpl - We will get to those latter..
 			/
 		2. Handlers are moved to handlers folder
 		

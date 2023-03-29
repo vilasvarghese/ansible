@@ -1,0 +1,2755 @@
+Install ansible on ubuntu 22.04
+
+Only on the master node
+	sudo su
+	apt update -y
+	apt install ansible -y
+	ansible --version
+
+	#to remove
+	apt purge ansible ansible-core
+	------------------
+	or 
+	apt install software-properties-common
+	add-apt-repository ppa:ansible/ansible --yes --update
+
+	apt install ansible-core
+	ansible --version
+
+	---------------------------
+	More appropriate way to install ansible 
+	https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+	python3 -m pip -V
+	sudo apt install python3-pip -y
+	follow above - do this as vilas not root
+	https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+	---------------------------
+
+On all nodes 
+
+	sudo su
+	#create user called "vilas"
+		useradd -m -s /bin/bash vilas
+
+	#setup password
+		passwd vilas
+
+	#Make user a sudo user in ubuntu. This is required to install software.
+		usermod -aG sudo vilas
+		#Instead of editing visudo 
+		echo "username  ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/username
+		echo "vilas  ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/username
+		
+		su - vilas
+		sudo su
+			enter vilas pwd
+			it should work.
+		exit
+			
+
+
+	under /etc/ssh/sshd_config
+		sudo vi /etc/ssh/sshd_config
+		#sudo is mandatory
+
+Only on the master node 
+
+	cd 
+	mkdir -p ~/.ssh
+	touch ~/.ssh/authorized_keys
+
+	chmod -R 700 ~/.ssh
+	chmod 600 ~/.ssh/*
+
+
+	# To disable tunneled clear text passwords, change to no here!
+		PasswordAuthentication yes
+
+	#add hosts in /etc/hosts
+
+	sudo systemctl restart sshd.service
+
+
+su - vilas
+ssh-keygen -t rsa
+ssh-copy-id vilas@<ip> 
+	Troubleshoot
+		check the security group.
+
+cat ~/.ssh/id_rsa.pub
+	Copy it to the remote ~/.ssh/authorized_keys
+
+ssh <worker ip>
+
+------------------------------------------------------------------------------
+● Ansible Introduction
+------------------------------------------------------------------------------
+•	What is Ansible
+
+    Ansible  
+		open-source IT automation tool 
+		automate 
+			IT infrastructure 
+			configuration management tasks.
+    Uses a declarative language called YAML 
+		define 
+			inventory
+			configurations 
+			playbooks
+		easy to understand and maintain.
+    Agentless architecture
+		no software to be installed on the target system
+		easy to get started with and 
+		lightweight
+		secured.
+    Designed to be flexible
+		manage a wide range of systems
+			servers 
+			network devices 
+			cloud resources 
+			containers.
+    Powerful set of modules 
+		allow you to perform a wide range of tasks
+			simple file management 
+			complex orchestration and 
+			deployment scenarios.
+    Strong security features
+		encrypted data storage and communication
+		SSH
+
+What is IaC
+	Infrastructure proivisiong tools
+	Configuration Management tools
+	
+	
+
+
+
+------------------------------------------------------------------------------
+•	Ansible Architecture
+
+Ansible architecture:
+    Open-source IT automation tool 
+	configuration management tool
+    Ansible architecture 
+		client-server model
+			controlling machine (called Ansible control node)
+				sends commands to managed nodes 
+					over SSH or WinRM protocol.
+				node requires 
+					Python 2.7 or Python 3.x or higher
+					Ansible package installed.
+			managed nodes 
+				nodes managed by control node
+				require 
+					Python 2.6 or Python 2.7 (or higher)
+					SSH daemon running on them.
+	The main components of Ansible architecture:
+		Inventory: 
+			list of managed nodes
+				their details
+					IP addresses
+					hostnames, 
+					group memberships.
+		Playbooks: 
+			a set of YAML files 
+			define tasks to be executed 
+				on managed nodes
+			contain one or more plays
+			each defines 
+				set of tasks 
+					to be executed 
+					on a group of managed nodes.
+		Modules: 
+			reusable units of code 
+			perform specific actions on managed nodes
+				e.g. 
+					installing packages
+					managing users
+					restarting services.
+		Roles: 
+			a set of 
+				playbooks
+				modules
+				files organized 
+					in a specific directory structure 
+					perform a specific function
+						e.g.configuring a web server or database server.
+		Plugins: 
+			extend the functionality of Ansible 
+				e.g. 
+					adding new modules
+					inventory scripts
+					connection methods.
+
+	Ansible 
+		follows a push-based model
+		Ansible control node 
+			pushes configurations and commands 
+				to the managed nodes.
+	Ansible uses 
+		SSH or WinRM 
+			to connect to managed nodes 
+			execute tasks. 
+		SSH is the default protocol 
+			used for Linux-based  
+		WinRM 
+			used for Windows-based managed nodes.
+	Ansible 
+		has a built-in module 
+			called "ansible-pull," 
+		allows the managed nodes 
+			to pull the configurations and commands 
+				from the Ansible control node. 
+		This module is useful if
+			managed nodes have 
+				restrictive firewall rules 
+			or 
+				not always connected to the network.
+		has a web-based user interface 
+			called "Ansible Tower," 
+			provides a centralized management console for Ansible. 
+	Ansible Tower 
+		provides features like 
+			job scheduling, 
+			inventory management, 
+			role-based access control
+			auditing.
+			
+			
+			
+	ansible --version
+
+	config file
+		lowest priority
+			priority: 4. /etc/ansible/ansible.cfg
+			priority: 3. ~/.ansible.cfg
+			priority: 2. /etc/ansible/ansible.cfg
+			priority: 1. ANSIBLE_CONFIG env. variable.
+
+			create it and execute 
+				ansible --version 
+				
+				
+	cat /etc/ansible/ansible.cfg
+		inventory = hosts
+		
+		create a file hosts
+		ansible is able to understand the same
+		
+	mv /home/user/.ssh/known_hosts
+	ansible all -m ping
+		fails
+		
+		
+	ANSIBLE_HOST_KEY_CHECKING=false ansible all -m ping
+		now it will work
+		cat /etc/ansible/ansbile.cfg 
+			new entry for host_key_checking=false
+	
+	-m is for module
+	ansible all -m ping 
+		works
+		
+	ansible all --list-hosts
+
+	id
+		user detail on local machine
+	
+	ansible all -m command -a 'id' -o
+	
+	
+			
+------------------------------------------------------------------------------
+•	How Ansible Works?
+
+	already covered
+
+------------------------------------------------------------------------------
+•	Terminologies in Ansible
+	already covered
+------------------------------------------------------------------------------
+•	Advantages of Ansible
+
+    Agentless: 
+		doesn't require any additional software or agent to be installed on the target hosts. This simplifies the management and reduces the security risks associated with agent-based tools.
+
+    Simple and easy to use: 
+		No new language to learn
+		Ansible uses a simple and easy-to-read YAML syntax for defining tasks, which makes it easy for even non-developers to use and understand.
+
+    Scalable: 
+		Ansible is designed to be highly scalable, and can manage thousands of hosts at the same time. This makes it a great choice for large-scale deployments.
+
+    Platform-agnostic: 
+		Ansible can be used to manage a wide range of platforms, including Linux, Windows, and network devices, making it a versatile tool for IT automation.
+
+    Modular and extensible: 
+		Ansible comes with a large number of built-in modules that can be used to perform various tasks, and it can also be extended with custom modules to meet specific needs.
+
+    Idempotent: 
+		Ansible follows the idempotent principle, which means that running the same playbook multiple times will result in the same state, regardless of the current state of the system.
+
+    Community support: 
+		Ansible has a large and active community of users and contributors, which provides extensive documentation, modules, and playbooks that can be used for various use cases.
+
+------------------------------------------------------------------------------
+•	Ansible Vs Chef Vs Puppet Vs Terraform
+
+Here are some key differences between Ansible, Chef, Puppet, and Terraform:
+
+Ansible:
+
+    Agentless: 
+		Ansible does not require an agent to be installed on the target hosts, making it easy to manage.
+    Simpler  syntax: 
+		Ansible uses a simpler YAML-based syntax, which is easier to learn and read.
+    Push-based: 
+		Ansible uses a push-based model, where the control machine sends commands to the target hosts.
+    Suitable for DevOps: 
+		Ansible is a good fit for DevOps teams who want a simple, agentless, and fast tool for managing infrastructure.
+
+Chef:
+
+    Agent-based: 
+		Chef requires an agent to be installed on target hosts, which can add complexity.
+    Declarative syntax: 
+		Chef uses a declarative syntax for defining configurations, which can be more complex than Ansible's YAML syntax.
+    Pull-based: 
+		Chef uses a pull-based model, where the target hosts periodically pull configurations from the Chef server.
+    Suitable for complex environments: 
+		Chef is a good fit for complex environments with large numbers of nodes and complex configurations.
+
+Puppet:
+
+    Agent-based: 
+		Puppet requires an agent to be installed on target hosts, which can add complexity.
+    Declarative syntax: 
+		Puppet uses a declarative syntax for defining configurations, which can be more complex than Ansible's YAML syntax.
+    Pull-based: 
+		Puppet uses a pull-based model, where the target hosts periodically pull configurations from the Puppet server.
+    Suitable for enterprise: 
+		Puppet is a good fit for enterprise environments with complex configurations and compliance requirements.
+
+Terraform:
+
+    Infrastructure as code: 
+		Terraform is a tool for managing infrastructure as code, which means that infrastructure is defined using code that can be versioned, shared, and reused.
+    Cloud-focused: 
+		Terraform is designed for managing infrastructure on cloud platforms, such as AWS, Azure, and GCP.
+    Declarative syntax: 
+		Terraform uses a declarative syntax for defining infrastructure, which can be more complex than Ansible's YAML syntax.
+    Supports multi-cloud: 
+		Terraform is a good fit for managing infrastructure across multiple cloud providers.
+
+------------------------------------------------------------------------------
+● Installation
+	already covered.
+------------------------------------------------------------------------------
+•	Understanding Ansible installation.
+------------------------------------------------------------------------------
+•	Install Ansible
+------------------------------------------------------------------------------
+● Basics of Ansible
+•	Introduction to 
+------------------------------------------------------------------------------
+o	YAML
+------------------------------------------------------------------------------
+o	Managed nodes
+		
+------------------------------------------------------------------------------
+o	Inventory
+------------------------------------------------------------------------------
+o	Modules
+------------------------------------------------------------------------------
+o	Tasks
+------------------------------------------------------------------------------
+o	Playbooks
+------------------------------------------------------------------------------
+o	Configurations
+------------------------------------------------------------------------------
+
+
+
+● Ansible authentication and Authorization
+------------------------------------------------------------------------------
+•	SSH with password
+------------------------------------------------------------------------------
+•	SSH with key
+------------------------------------------------------------------------------
+•	sudo access
+------------------------------------------------------------------------------
+● Ad-hoc commands
+------------------------------------------------------------------------------
+D:\PraiseTheLord\HSBGInfotech\Others\vilas\ansible\01adhoc\instructions.md 
+
+
+
+Ansible Ad-hoc commands 
+	one-liners 
+	used for quick and easy automation tasks 
+	examples of commonly used Ad-hoc commands in Ansible:
+		Ping: 
+			This command is used to check the connectivity of a target machine.
+			ansible <hostname or IP address> -m ping
+
+		Shell: 
+			This command is used to run shell commands on the target machine.
+			ansible <hostname or IP address> -m shell -a "<command>"
+		Copy: 
+			This command is used to copy files from the control machine to the target machine.
+			ansible <hostname or IP address> -m copy -a "src=<source_file_path> dest=<destination_path>"
+		User: 
+			ansible <hostname or IP address> -m user -a "name=<username> state=<present or absent>"
+			This command is used to create or remove a user on the target machine.
+		Service: 
+			This command is used to start, stop, or restart a service on the target machine.
+			ansible <hostname or IP address> -m service -a "name=<service_name> state=<started or stopped or restarted>"
+		Note 
+			Ad-hoc commands can run multiple tasks at once 
+				use -a option 
+					followed by a list of tasks separated by &&.
+•	Execute a task on
+------------------------------------------------------------------------------
+o	Localhost
+------------------------------------------------------------------------------
+o	Remote machine
+------------------------------------------------------------------------------
+o	Multiple remote machines using 
+------------------------------------------------------------------------------
+o	Simple Inventory
+	covered below
+------------------------------------------------------------------------------
+o	Group in Inventory
+------------------------------------------------------------------------------
+	covered below
+
+Day2
+------------------------------------------------------------------------------
+● Ansible Inventory
+
+	Ansible inventory 
+		configuration file 
+		contains a list of hosts or nodes that Ansible manages.
+	
+	The inventory file 
+		can be in 
+			INI format
+			YAML format or a 
+			script that generates dynamic inventory.
+	Default location 
+		/etc/ansible/hosts
+		can specify a different file location 
+			using the -i option with ansible command.
+	The inventory file 
+		can contain different types of variables
+			including 
+				host variables
+				group variables
+				global variables.
+	Host variables 
+		specific to each host 
+		override any variable with 
+			same name defined in group or global variables.
+	Group variables 
+		defined for a group of hosts 
+		inherited by all hosts in that group.
+		defined for all hosts 
+		can be overridden by host or group variables.
+	
+	Ansible provides multiple ways to organize hosts in groups
+		by functionality
+		location
+		environment or any other criteria.
+	You can use Ansible inventory 
+		to manage hosts 
+			on different platforms
+				including 
+					Linux, 
+					Windows, 
+					network devices
+					cloud providers.
+	
+	Ansible also provides 
+		plugins 
+			integrate with external inventory systems
+			e.g. 
+				AWS
+				Azure
+				OpenStack
+					etc.
+
+			
+
+	D:\PraiseTheLord\HSBGInfotech\Others\vilas\ansible\inventory\instructions.md
+------------------------------------------------------------------------------
+•	Inventory 
+
+
+------------------------------------------------------------------------------
+o	group
+------------------------------------------------------------------------------
+o	group of groups
+------------------------------------------------------------------------------
+o	directory
+------------------------------------------------------------------------------
+o	dynamic inventory
+------------------------------------------------------------------------------
+
+Facts (not a part of current TOC)
+	But a good reference
+	D:\PraiseTheLord\HSBGInfotech\Others\vilas\ansible\02facts\instructions.md
+
+
+Playbooks
+
+	D:\PraiseTheLord\HSBGInfotech\Others\vilas\ansible\05playbook\instructions.md
+
+
+
+An Ansible playbook 
+	YAML file 
+	defines a set of tasks to be executed 
+		on one or more hosts.
+
+	contain one or more plays
+	each play 
+		set of tasks to be executed 
+			on a specific group of hosts.
+		A task 
+			single unit of work that Ansible performs
+			e.g. 
+				installing a package
+				copying a file
+				running a command.
+			uses module 
+				defines the action to be performed
+					with its parameters and options.
+	Ansible provides 
+		wide range of built-in modules 
+		https://docs.ansible.com/ansible/2.9/modules/list_of_all_modules.html
+		for 
+			system administration
+			cloud management
+			network automation
+			etc.
+	We can create custom modules 
+		to perform a specific task 
+			not available in the built-in modules.
+	A playbook can also include variables
+		can be defined at different levels
+			e.g. 
+				playbook level
+				play level
+				or task level.
+	Variables can be used to parameterize the playbook 
+		make it reusable 
+			different 
+				environments
+				hosts or 
+				use cases.
+	Ansible supports 
+		conditionals, 
+			execute tasks based on a condition
+				variable value or 
+				command output
+		loops
+			repeat tasks for a set of items
+				in list or a dictionary.
+		handlers 
+			tasks triggered by other tasks
+				e.g. service restart after a configuration change.
+			 make the playbook more 
+				flexible 
+				responsive 
+					to changes in the system or environment.
+	Ansible provides 
+		different ways to organize and run playbooks
+			e.g 
+				tags
+				roles
+				includes
+	use the ansible-playbook command to run a playbook 
+
+
+------------------------------------------------------------------------------
+	● Intro to Playbooks
+	------------------------------------------------------------------------------
+	● Writing a Play Using Modules
+	------------------------------------------------------------------------------
+	● Writing a Playbook
+	------------------------------------------------------------------------------
+	● Running a Playbook in 
+	------------------------------------------------------------------------------
+		Localhost
+		Local Server
+		Remote Server
+------------------------------------------------------------------------------
+Most Used Modules in Ansible
+
+
+Ansible modules 
+	standalone scripts 
+	executed by/in Ansible to perform specific tasks on remote systems.
+    several types of modules
+		built-in modules
+			included in the Ansible distribution 
+			e.g. 
+				managing files
+				installing packages
+				manipulating system settings
+				interacting with cloud platforms
+		community modules
+			developed by Ansible community 
+			can be found in the Ansible Galaxy repository. 
+			contributed by users and vendors
+		custom modules.
+			developed by users and organizations 
+			perform specific tasks 
+				not covered by the built-in or community modules.
+    written in a variety of programming languages
+		Python
+		Perl
+		Ruby
+		PowerShell.
+    Modules can be executed in various ways
+		"command" module
+		"shell" module
+		"raw" mo  dule
+		"script" module.
+    can be used in combination with other modules
+		e.g.  
+			"register" module
+				capture output and use it in subsequent tasks.
+    accept arguments and options 
+		to customize 
+		e.g. destination directory 
+		or 	name of a package to be installed.
+    support conditional statements 
+		e.g. copy if a file exist.
+    can be used in 
+		ad-hoc commands
+		playbooks 
+    key component of Ansible's declarative approach 
+		allow users to specify desired state 
+		Ansible determine necessary actions to achieve that state.
+
+
+------------------------------------------------------------------------------
+•	Setup Module
+
+Ansible Setup module 
+	built-in module 
+	provides information about the remote system.
+    retrieve information like 
+		system architecture
+		operating system version
+		available memory
+		network interfaces
+		remote system's IP address
+		CPU architecture
+		available disk space
+		installed packages etc.
+
+    automatically executed at the beginning of every playbook
+		output stored in"ansible_facts" variable.
+    information gathered can be used in subsequent tasks
+		for example, to conditionally execute certain tasks based on the remote system's characteristics.
+    module has a large number of options 
+		can be used to customize its behavior
+			e.g. filtering the output to retrieve only specific information.
+    platform-independent 
+		can gather information from systems running 
+			Linux
+			Windows
+			macOS etc.
+    N.B: Setup module can reveal sensitive information 
+		e.g. 
+			passwords and system configurations
+			use it with caution 
+				only on trusted systems
+				with proper restrictions.
+
+
+	ansible <host> -m setup | more  
+
+------------------------------------------------------------------------------
+•	Command Module
+
+Ansible Command module 
+	built-in module 
+	run commands on the remote system.
+    can execute different types of command or script
+		require interactive input 
+		produce complex output etc.
+    perform a wide range of tasks
+		installing packages
+		managing users and groups
+		manipulating files
+		running scripts etc.
+    supports various types of shell commands
+		Bash
+		PowerShell
+		Python.
+    can run with elevated privileges
+		root or sudo
+    supports wide options to control execution 
+		e.g. 
+			timeouts
+			environment variables
+			working directories
+			etc.
+    can be used with other modules
+		e.g. "register" module
+			capture the output of the command 
+				use it in subsequent tasks.
+    platform-independent 
+		Linux, 
+		Windows, 
+		macOS
+		other operating systems.
+    execute multiple commands at once
+		specify them as a list 
+		or use in loop construct in the playbook.
+    
+	can be used condition 
+		e.g. if certain file or directory exists.
+    
+	can damage system  
+		use caution and only on trusted systems.
+
+	ansible all -m command -a "uptime"
+	cd D:\PraiseTheLord\HSBGInfotech\Others\vilas\ansible\05playbook
+	ansible-playbook command.yml
+------------------------------------------------------------------------------
+•	Expect Module
+The Ansible Expect module 
+	built-in module 
+	automate interactions with command-line 
+		for interactive input.
+    Uses the Expect tool
+		Tcl-based scripting language 
+			for automating interactive applications.
+    typical use 
+		install software 
+			with manual input 
+			e.g. 
+				license key 
+				specify configuration settings.
+    supports 
+		sequence of expected prompts and responses
+			Ansible will use to automatically respond to the prompts during the installation process.
+		wait for specific output from a command or script
+			perform an action based on the output
+				e.g. sending an email or running a playbook.
+		various options for controlling the interaction
+			e.g. 
+				timeouts
+				regular expressions for matching expected prompts
+				send control characters such as CTRL-C or CTRL-D.
+    platform-independent - supports
+		Linux
+		Windows
+		macOS
+		other operating systems.
+    can be used in combination with other modules
+		"command" or "shell" module
+		execute the command or script that requires interactive input.
+    can potentially cause system damage if used improperly
+	
+------------------------------------------------------------------------------
+•	RAW Module
+Ansible RAW module 
+	built-in module 
+	execute arbitrary commands on remote systems 
+		without module-specific implementation.
+    used when 
+		no module for a desired task
+	or 
+		to get low-level access to the system.
+    can execute any command or script 
+		regardless of 
+			programming language 
+		or 	
+			syntax used.
+    can control the execution like
+		timeouts
+		environment variables
+		working directories.
+    can be used in combination with other modules
+		"register" module
+			to capture output and use it in subsequent tasks.
+    platform-independent 
+		Linux
+		Windows
+		macOS
+		other operating systems.
+    can execute multiple commands at once
+		specify as a list 
+	or 
+		use a loop construct in the playbook.
+    can potentially cause system damage 
+	not idempotent
+		if executed multiple times
+			can give unexpected or unintended consequences.
+    last resort option and should only be used when no other module can perform the desired task.
+
+D:\PraiseTheLord\HSBGInfotech\Others\vilas\ansible\05playbook\debug.yml
+------------------------------------------------------------------------------
+•	Script Module
+Ansible Script module 
+	built-in module 
+	execute scripts on remote systems.
+    use if 
+		no specific module exist
+	or 
+		task requires a complex script.
+    can execute scripts written in languages like 
+		Python
+		Perl
+		Ruby
+		PowerShell or 
+		shell scripts.
+    various options to control
+		timeouts
+		environment variables
+		working directories.
+    can be used in combination with other modules
+		"register" module
+			capture output and use it in subsequent tasks.
+    platform-independent 
+		use to execute scripts on systems running 
+			Linux
+			Windows
+			macOS
+			other operating systems.
+    scripts can be complex 
+		e.g. 
+			deploying applications
+			configuring databases
+			running backups.
+    execute scripts that require input 
+    execute scripts that are not idempotent
+		may perform different actions each time they are executed.
+    can potentially cause system damage if used improperly
+    last resort if no other module can perform the desired task.
+
+------------------------------------------------------------------------------
+•	Shell Module
+    built-in module 
+	execute shell commands on remote systems.
+    The module is typically used when there is no existing module that can perform the desired task, or when the task requires a command-line tool or utility to be executed.
+    The module can execute any shell command or script on the remote system, using the default shell of the target system.
+    The module can be run with elevated privileges, such as root or sudo, by specifying the appropriate user and password in the playbook.
+    The module supports various options for controlling the execution of the command, such as timeouts, environment variables, and working directories.
+    The module can be used in combination with other modules, such as the "register" module, to capture output and use it in subsequent tasks.
+    The module is platform-independent and can be used to execute shell commands on systems running Linux, Windows, macOS, and other operating systems.
+    The module can be used to execute commands that perform simple tasks, such as creating directories, copying files, or running basic system commands.
+    The module can be used to execute commands that require input from the user or require interaction with other systems or services.
+    The module is idempotent, meaning that if the same command is executed multiple times, it will not result in unexpected or unintended consequences.
+    It's important to note that the Shell module can potentially cause system damage if used improperly, so it's important to use it with caution and only on trusted systems.
+    The Shell module is a last resort option and should only be used when no other module can perform the desired task.
+------------------------------------------------------------------------------
+•	File Module
+    built-in module 
+	manage 
+		files and 
+		directories 
+			on [multiple] remote systems.
+    
+	create, delete, or modify files and directories on the remote system.
+    control ownership, permissions, and contents of the file or directory.
+    used in combination with other modules
+		"copy" 
+		"template" module
+			create or modify files based on templates or variables.
+    set file attributes like 
+		timestamps
+		ACLs, or 
+		SELinux contexts.
+    platform-independent 
+		Linux
+		Windows
+		macOS
+		and other operating systems.
+    idempotent
+		same operation is executed multiple times
+			will not result in unexpected or unintended consequences.
+    e.g. usecases
+		create or modify 
+			configuration files
+			deploying application files or 
+			managing log files.
+    
+	
+	ansible all -m file -a 'path=/tmp/test state=file mode=600'
+	
+------------------------------------------------------------------------------
+•	Apt Module
+    built-in module 
+	manage packages on remote systems 
+		that use the Advanced Package Tool (APT) package manager
+			e.g. Debian and Ubuntu.
+    used to 
+		install
+		remove or 
+		update packages 
+			on the [multiple] remote system.
+	control
+		version
+		state and 
+		dependencies of the package.
+    used in combination with other modules
+		"notify" 
+		or "service" module
+			trigger actions based on the installation or removal of packages.
+    used to manage repositories
+		add or remove repositories that contain packages.
+    platform-dependent 
+		[those systems should use the APT package manager].
+    idempotent
+		same operation is executed multiple times
+			will NOT result in unexpected or unintended consequences.
+    The module is often used for tasks such as installing system packages, upgrading software packages, or managing dependencies for applications.
+    The module is an important component of many Ansible playbooks and is frequently used in combination with other modules to achieve complex automation tasks.
+------------------------------------------------------------------------------
+•	Yum Module
+    The Ansible Yum module is a built-in module that allows you to manage packages on remote systems that use the Yum package manager, such as Red Hat, CentOS, and Fedora.
+    The module can be used to install, remove, or update packages on the remote system.
+    The module supports various options for controlling the version, state, and dependencies of the package.
+    The module can be used in combination with other modules, such as the "notify" or "service" module, to trigger actions based on the installation or removal of packages.
+    The module can be used to manage repositories, such as adding or removing repositories that contain packages.
+    The module is platform-independent and can be used to manage packages on systems running Linux, Windows, macOS, and other operating systems, as long as those systems use the Yum package manager.
+    The module can be used to manage packages on multiple remote systems simultaneously.
+    The module is idempotent, meaning that if the same operation is executed multiple times, it will not result in unexpected or unintended consequences.
+    The module is often used for tasks such as installing system packages, upgrading software packages, or managing dependencies for applications.
+    The module is an important component of many Ansible playbooks and is frequently used in combination with other modules to achieve complex automation tasks.
+------------------------------------------------------------------------------
+AWS Specific Modules in Ansible
+
+Review from here
+
+https://devopscube.com/setup-ansible-aws-dynamic-inventory/
+
+https://blog.knoldus.com/setup-aws-resources-using-ansible-modules/
+
+https://www.coachdevops.com/2021/07/ansible-playbook-for-provisioning-new.html
+
+sudo apt install python3-pip -y
+pip3 install boto boto3 botocore
+pip3 install --upgrade urllib3
+
+#pip3 install python-boto
+#pip install --upgrade chardet
+ansible-galaxy collection install amazon.aws:==3.3.1 --force
+ansible-galaxy collection install community.aws
+
+create a role
+	new role
+		ec2
+			attach AmazonEc2FullAccesss permission (seach for ec2)
+			
+Attach this role to the ec2 instance where ansible is installed
+
+add 
+------------------
+[localhost]
+<ip>
+------------------
+in inventory
+
+install aws 
+aws configure 
+
+ansible-playbook D:\PraiseTheLord\HSBGInfotech\Others\vilas\ansible\05playbook\aws\ec2.yml
+
+
+------------------------------------------------------------------------------
+•	ec2_instance module – Create & manage EC2 instances
+https://www.mindbowser.com/how-to-create-ec2-instances-using-ansible/
+https://medium.com/@deepak.kumbhar/how-to-create-ec2-instances-using-ansible-1b87a35edc0b
+------------------------------------------------------------------------------
+•	ec2_instance_info module – Gather information about ec2 instances in AWS
+
+https://docs.ansible.com/ansible/2.9/modules/ec2_instance_info_module.html
+https://stackoverflow.com/questions/59381443/how-do-i-get-my-ansible-playbook-to-gather-the-desired-aws-ec2-information-and-w
+https://gist.github.com/josnidhin/c57e2cc585d99e25cb3b234b703aad11
+------------------------------------------------------------------------------
+•	ec2_key module – Create or delete an EC2 key pair
+https://www.cyberciti.biz/faq/how-to-create-aws-ec2-key-using-ansible/
+
+------------------------------------------------------------------------------
+•	ec2_metadata_facts module – Gathers facts (instance metadata) about remote hosts within EC2
+https://stackoverflow.com/questions/47467079/how-to-get-metadata-of-aws-instance-created-in-ansible
+
+------------------------------------------------------------------------------
+•	ec2_security_group module – Maintain an EC2 security group
+https://www.infinitypp.com/ansible/create-aws-resources-using-ansible/
+
+------------------------------------------------------------------------------
+•	ec2_security_group_info module – Gather information about EC2 security groups in AWS
+
+
+------------------------------------------------------------------------------
+
+
+Day3
+
+
+Ansible Playbooks
+------------------------------------------------------------------------------
+•	Outlining Your Playbook
+
+    Define your goals: 
+		1. identifying goal of Ansible playbook. 
+			e.g. 
+				configuring servers
+				deploying applications
+				automating routine maintenance tasks.
+
+    Define your hosts: 
+		specify hosts in an inventory file 
+		or 
+		dynamically using a cloud provider's API.
+
+    Define your tasks: 
+		Break down your goals into specific tasks
+		Each task should be discrete unit of work 
+			that can be executed independently.
+
+    Organize your tasks into roles: 
+		If you have multiple tasks 
+			that are related to a specific function
+			consider organizing them into a role. 
+			Roles are a way to group tasks together and make them easier to manage.
+
+    Define variables: 
+		Define variables that will be used throughout your playbook. 
+		Variables can be used to customize the behavior of your tasks and roles.
+
+    Write your playbook: 
+		Once you have defined your goals
+			hosts
+			tasks
+			roles and 
+			variables
+			
+			it's time to write your playbook. Your playbook should be organized in a way that is easy to read and understand.
+
+    Test your playbook: 
+		Before deploying your playbook to production, test it on a development or staging environment to ensure that it works as expected.
+
+    Deploy your playbook: 
+		Once you are confident that your playbook works as expected, deploy it to your production environment.
+
+    Monitor and update: 
+		Monitor your playbook's performance and update it as necessary to accommodate changes in your infrastructure or applications.
+
+------------------------------------------------------------------------------
+•	Target Section
+
+
+The target section of an Ansible playbook specifies the hosts or groups of hosts that the playbook will run against. 
+This section is typically defined in the hosts field at the top of the playbook.
+
+Multiple ways to specify hosts or groups of hosts in Ansible:
+    
+	1. By hostname or IP address: 
+		You can specify a single host or a list of hosts by their hostname or IP address. 
+		For example:
+		
+		- hosts:
+			- webserver1
+			- webserver2
+
+    2. By inventory group: You can group hosts together in your inventory file and specify the group name in your playbook. For example:
+
+		- hosts: webservers
+
+    3. By pattern matching: 
+		You can use pattern matching to select hosts based on certain criteria. For example:
+
+		- hosts: "*.example.com"
+
+		This will select all hosts whose hostname ends with example.com.
+
+    4. By dynamic inventory: If you are using a cloud provider, you can use dynamic inventory to automatically discover and provision hosts based on certain criteria, such as instance tags or region.
+
+		It's also possible to use variables to define the hosts or groups of hosts that your playbook will run against. This can be useful if you want to dynamically select hosts based on certain conditions or if you want to reuse your playbook across multiple environments.
+
+		For example, you could define a variable webserver_hosts in a separate file, then reference it in your playbook like this:
+
+		yaml
+
+		- hosts: "{{ webserver_hosts }}"
+
+		This allows you to define the list of hosts or groups of hosts in a central location and reuse it across multiple playbooks.
+			
+------------------------------------------------------------------------------
+
+continue from here
+
+Variables
+
+
+	Ansible variables 
+		used to store data 
+		can be used in 
+			playbooks, 
+			templates
+			other Ansible components.
+		can be defined at different levels
+			like 
+				playbook level
+				play level or 
+				task level
+			and 
+				have a specific scope and precedence.
+	Playbook-level variables 
+		defined in the vars section 
+		apply to all plays and tasks in the playbook.
+	Play-level variables 
+		defined in the vars section of a play
+		apply only to the tasks in that play.
+	Task-level variables 
+		defined in the vars section of 
+			task
+			apply only to that task.
+	Variables can be defined using different formats
+		like 	
+			YAML
+			JSON, or 
+			INI
+				depending on the file type and personal preference.
+	Ansible has built-in variables 
+		represent information about 
+			hosts, 
+			groups
+			other system details
+			
+		like 
+			ansible_hostname
+			ansible_os_family
+			ansible_distribution and more.
+	variables can be used to parameterize playbooks 
+		make them more 
+			reusable 
+			flexible for different environments
+				hosts, or use cases.
+	Variables 
+		can be used in task 
+			parameters
+			templates
+			conditionals
+			loops, and more, using the {{ variable_name }} syntax.
+	We can override variables at runtime
+		use the -e option 
+		in ansible-playbook command 
+		or 
+			setting environment variables.
+	Ansible also provides different ways to 
+		manage and store variables
+		e.g. 
+			variable files
+			role defaults
+			inventory variables
+		or 
+			external sources
+				YAML or JSON files
+				databases, or APIs.
+	Variables can also be encrypted 
+		use Ansible Vault feature
+			allows you to store sensitive information
+				e.g. passwords or API keys
+				in a secure way.
+	You can use 
+		ansible-playbook --list-tasks command 
+		to see the variables used in a playbook
+			with their default values and descriptions.
+
+------------------------------------------------------------------------------
+•	Variables in Ansible Playbook
+	/ansible/06variables/instructions.md
+	
+------------------------------------------------------------------------------
+•	Variables in Ansible Playbook external file
+	/ansible/06variables/externalVariables
+	
+	https://www.redhat.com/sysadmin/extra-variables-ansible-playbook
+------------------------------------------------------------------------------
+•	Variables in Ansible Playbook include vars into task
+
+	ansible-playbook externalVariables/3include-variables.yml
+	https://www.devopsschool.com/tutorial/ansible/variables/ansible-variables-6-include-vars-using-include-vars-into-task.html
+------------------------------------------------------------------------------
+•	Register var in Ansible playbook
+	
+	ansible-playbook 4register_output.yml
+
+	https://www.educba.com/ansible-register/
+	https://linuxhint.com/ansible_register_module/
+------------------------------------------------------------------------------
+•	Prompt var in Ansible playbook
+
+	ansible-playbook externalVariables/6prompt_variables.yml
+
+	https://linuxconfig.org/introduction-to-ansible-prompts-and-runtime-variables
+	https://crunchify.com/ansible-how-to-accept-user-input-using-vars-prompt-and-command-line/
+------------------------------------------------------------------------------
+•	command line var in ansible
+	ansible-playbook 2external_vars.yml -e  '{"var1":"loc2"}' -vv
+
+https://www.devopsschool.com/blog/how-can-i-pass-variable-to-ansible-playbook-in-the-command-line/
+https://www.ansiblepilot.com/articles/pass-variables-to-ansible-playbook-in-command-line-ansible-extra-variables/
+------------------------------------------------------------------------------
+•	Variables in Ansible inventory file
+	ansible-playbook ansible/inventory/
+
+------------------------------------------------------------------------------
+•	Variables in Ansible inventory hostvars
+	ansible-playbook ansible/inventory/
+------------------------------------------------------------------------------
+•	Variables in Ansible inventory groupvars
+	ansible-playbook ansible/inventory/
+------------------------------------------------------------------------------
+•	Fact variables
+------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------
+•	Variable Section
+
+The vars section in an Ansible playbook is used to define variables that can be used throughout the playbook. Variables can be used to customize the behavior of tasks, roles, and templates in your playbook.
+
+There are several ways to define variables in Ansible:
+
+    1. Inline variables: You can define variables inline in a task using the vars keyword. For example:
+
+	- name: Install Apache web server
+	  apt:
+		name: apache2
+	  vars:
+		http_port: 80
+		https_port: 443
+
+		In this example, we define two variables http_port and https_port and use them in the apt task.
+
+    2. Play-level variables: You can define variables at the play level using the vars keyword. These variables are available to all tasks in the play. For example:
+
+		- hosts: webservers
+		  vars:
+			http_port: 80
+			https_port: 443
+		  tasks:
+			- name: Install Apache web server
+			  apt:
+				name: apache2
+
+		In this example, we define two variables http_port and https_port at the play level and use them in the apt task.
+
+    3. Role-level variables: You can define variables at the role level by creating a vars directory in your role and defining variables in a file named main.yml. For example:
+
+		roles/
+		  common/
+			tasks/
+			vars/
+			  main.yml
+
+In the main.yml file, you can define variables that are specific to the common role.
+
+    4. External variables: You can define variables in external files or directories and load them into your playbook using the vars_files or include_vars keywords. For example:
+
+- name: Load variables from external file
+  vars_files:
+    - /path/to/vars.yml
+
+- name: Load variables from external directory
+  include_vars:
+    dir: /path/to/vars
+
+In these examples, we load variables from an external YAML file or directory.
+
+Variables can be referenced in a playbook using the {{ variable_name }} syntax. For example, if we have defined a variable http_port, we can reference it in a task like this:
+
+yaml
+
+- name: Install Apache web server
+  apt:
+    name: apache2
+  vars:
+    http_port: 80
+  notify:
+    - restart apache
+  listen: "restart apache"
+    service:
+      name: apache2
+      state: restarted
+      port: "{{ http_port }}"
+
+In this example, we use the {{ http_port }} variable to specify the port number for the Apache service.
+
+------------------------------------------------------------------------------
+•	Task Section
+
+The tasks section in an Ansible playbook is where the main work of the playbook is defined. It contains a list of tasks, each of which represents a specific action that should be taken on the target hosts.
+
+Each task is defined using a module, which is a pre-built piece of code that performs a specific action on the target hosts. Ansible comes with many built-in modules for performing common tasks, such as installing packages, copying files, and managing services.
+
+Here is an example of a task that uses the apt module to install a package on the target hosts:
+
+yaml
+
+- name: Install Apache web server
+  apt:
+    name: apache2
+    state: present
+
+In this example, the apt module is used to install the apache2 package on the target hosts. The state: present parameter ensures that the package is installed if it is not already present.
+
+Tasks can also include conditions and loops to control their execution:
+
+yaml
+
+- name: Configure Apache web server
+  template:
+    src: /path/to/httpd.conf.j2
+    dest: /etc/apache2/httpd.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart apache
+  when: apache_installed.changed
+
+In this example, the template module is used to generate a configuration file for the Apache web server. The when parameter specifies that the task should only be executed if the apache_installed task has changed. The notify parameter triggers a handler that restarts the Apache service if the configuration file has changed.
+
+Tasks can also be organized into roles, which are reusable units of functionality that can be applied across multiple playbooks. Here is an example of a task defined in a role:
+
+yaml
+
+- name: Install package
+  apt:
+    name: "{{ package_name }}"
+    state: present
+
+In this example, the apt module is used to install a package specified by the package_name variable. The variable can be defined at the play or role level, or passed in as an argument when the role is invoked.
+
+Tasks can also include tags, which allow you to selectively run specific tasks based on their tags:
+
+yaml
+
+- name: Install package
+  apt:
+    name: "{{ package_name }}"
+    state: present
+  tags:
+    - packages
+
+In this example, the tags parameter specifies that the task is part of the packages tag. You can use the --tags and --skip-tags command-line options to control which tasks are executed.
+------------------------------------------------------------------------------
+•	Handler Section
+
+
+The handlers section in an Ansible playbook is where you define tasks that are triggered by changes made by other tasks. Handlers are typically used to restart services or perform other actions that need to be taken after a configuration change has been made.
+
+Handlers are defined using the notify keyword in a task. When a task with a notify keyword is executed and changes are made, any handlers associated with that task will be triggered. Handlers are only executed at the end of a play, after all tasks have been run.
+
+Here is an example of a task that uses the notify keyword to trigger a handler:
+
+yaml
+
+- name: Configure Apache web server
+  template:
+    src: /path/to/httpd.conf.j2
+    dest: /etc/apache2/httpd.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart apache
+
+In this example, the template module is used to generate a configuration file for the Apache web server. The notify parameter specifies that the restart apache handler should be triggered if changes are made to the configuration file.
+
+Handlers are defined in the handlers section of the playbook, like this:
+
+yaml
+
+handlers:
+  - name: restart apache
+    service:
+      name: apache2
+      state: restarted
+
+In this example, the restart apache handler is defined using the service module. When the handler is triggered, it will restart the apache2 service on the target hosts.
+
+Handlers can also be organized into roles, like tasks. Here is an example of a handler defined in a role:
+
+yaml
+
+handlers:
+  - name: restart service
+    service:
+      name: "{{ service_name }}"
+      state: restarted
+
+In this example, the restart service handler is defined using the service module. The service_name variable can be defined at the play or role level, or passed in as an argument when the role is invoked.
+
+Handlers can also be tagged, just like tasks:
+
+yaml
+
+handlers:
+  - name: restart service
+    service:
+      name: "{{ service_name }}"
+      state: restarted
+    tags:
+      - services
+
+In this example, the restart service handler is tagged with services. You can use the --tags and --skip-tags command-line options to control which handlers are executed.
+
+------------------------------------------------------------------------------
+•	Lookups
+
+
+Lookups in Ansible playbooks are a way to retrieve data from various sources and use it in your tasks. They allow you to dynamically populate variables with data that is not available at the time the playbook is written.
+
+There are several built-in lookup plugins in Ansible that can be used to retrieve data from various sources. Here are some examples:
+
+    file: This plugin is used to read the contents of a file on the target host.
+
+
+- name: Read contents of file
+  debug:
+    var: lookup('file', '/path/to/file')
+
+In this example, the file lookup plugin is used to read the contents of a file at /path/to/file on the target host. The debug module is then used to display the contents of the file.
+
+env: This plugin is used to retrieve the value of an environment variable on the target host.
+
+
+- name: Retrieve value of environment variable
+  debug:
+    var: lookup('env', 'MY_VARIABLE')
+
+In this example, the env lookup plugin is used to retrieve the value of an environment variable named MY_VARIABLE on the target host. The debug module is then used to display the value of the variable.
+
+ini: This plugin is used to retrieve values from an INI file on the target host.
+
+- name: Retrieve value from INI file
+  debug:
+    var: lookup('ini', '/path/to/file section=section_name key=key_name')
+
+In this example, the ini lookup plugin is used to retrieve the value of a key named key_name in a section named section_name from an INI file at /path/to/file on the target host. The debug module is then used to display the value of the key.
+
+vault: This plugin is used to retrieve secrets from an Ansible Vault encrypted file.
+
+    - name: Retrieve secret from Ansible Vault
+      debug:
+        var: lookup('vault', '/path/to/encrypted/file secret=secret_name')
+
+    In this example, the vault lookup plugin is used to retrieve the value of a secret named secret_name from an encrypted file at /path/to/encrypted/file on the target host. The debug module is then used to display the value of the secret.
+
+There are many more lookup plugins available in Ansible that can be used to retrieve data from various sources, such as databases, APIs, and external scripts. You can also create your own custom lookup plugins if needed.
+
+------------------------------------------------------------------------------
+•	Understand the facts in Ansible
+------------------------------------------------------------------------------
+•	Handlers in Ansible
+D:\PraiseTheLord\HSBGInfotech\Others\vilas\ansible\05playbook\handlers
+------------------------------------------------------------------------------
+•	Includes vs. Imports in Ansible
+D:\PraiseTheLord\HSBGInfotech\Others\vilas\ansible\06variables\include-import\include
+------------------------------------------------------------------------------
+•	Conditions in Ansible
+	
+------------------------------------------------------------------------------
+•	Loops in Ansible
+	ansible/05playbook/loop/instructions.md
+
+------------------------------------------------------------------------------
+•	Blocks in Ansible
+------------------------------------------------------------------------------
+•	Files operations in Ansible
+------------------------------------------------------------------------------
+•	Templating (Jinja2) in Ansible
+
+
+
+
+
+jinja2 variable in playbook tutorial
+
+Here's a step-by-step tutorial on how to use Jinja2 variables in your Ansible playbook:
+
+Define a variable in your playbook: In your playbook, define a variable that you want to use in your Jinja2 template. For example:
+yaml
+Copy code
+---
+- hosts: webserver
+  vars:
+    site_title: "My Website"
+  tasks:
+    ...
+Here, site_title is the name of the variable and "My Website" is its value.
+
+Use the variable in your Jinja2 template: In your Jinja2 template, use the variable by enclosing its name in double curly braces. For example:
+php
+Copy code
+<html>
+<head>
+    <title>{{ site_title }}</title>
+</head>
+<body>
+    <h1>Welcome to {{ site_title }}!</h1>
+    <p>This is the default web page for {{ site_title }}.</p>
+</body>
+</html>
+Here, {{ site_title }} is the name of the variable that was defined in the playbook.
+
+Use the template in your playbook task: In your playbook task, use the template module to render the Jinja2 template and save it to a file on the remote host. For example:
+
+
+- name: Create index.html file
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    mode: '0644'
+Here, index.html.j2 is the name of the Jinja2 template file, /var/www/html/index.html is the location where the rendered template will be saved on the remote host, and mode is the file permission.
+
+Run the playbook: Finally, run the playbook using the following command:
+
+ansible-playbook myplaybook.yml -i inventory
+Here, myplaybook.yml is the name of your playbook, and inventory is the inventory file that contains the list of hosts where the playbook will be executed.
+
+That's it! You have now used a Jinja2 variable in your Ansible playbook to generate dynamic content.
+
+
+------------------------------------------------------------------------------
+•	Basic Error Handling in Playbooks
+
+
+
+------------------------------------------------------------------------------
+•	Basic Trouble shooting in Ansibles
+------------------------------------------------------------------------------
+	 
+Day4
+------------------------------------------------------------------------------
+Controlling playbook execution
+
+Continue from here
+
+------------------------------------------------------------------------------
+•	Linear Strategy       
+
+Linear Strategy: 
+	default strategy 
+	executes the tasks 
+		in the order defined in the playbook. 
+	Explicitly defined in the playbook using the "strategy: linear" keyword.  
+	
+	executes the tasks in the playbook 
+		in a linear or sequential manner
+			order defined in the playbook. 
+		each task 
+			executed on each host 
+				in the inventory in the same order
+					one after the other.
+
+	advantage 
+		provides a predictable and easy-to-understand execution flow, which can be useful for simple playbooks or playbooks that require a specific order of execution. Additionally, the Linear strategy ensures that tasks are executed in a deterministic way, which means that the results are consistent regardless of how many times the playbook is run.
+
+However, the Linear strategy can be slow when executing tasks on large inventories or when some tasks take longer to execute than others, which can result in a longer overall execution time. In such cases, other strategies such as the Free or Serial strategy may be more suitable.
+
+To use the Linear strategy explicitly, you can add the following line to the top of your playbook:
+	
+	
+------------------------------------------------------------------------------
+•	Free
+
+	execute in parallel 
+		across all hosts in the inventory. 
+	use 
+		if tasks that do not have any dependencies 
+		by defining "strategy: free" keyword.
+
+
+
+	connection and execution strategy 
+	Run tasks on multiple hosts in parallel
+		without any pre-defined order. 
+	This means that Ansible will execute tasks on multiple hosts at the same time, without waiting for each task to complete before moving on to the next one.
+
+To use the free strategy, you can add the following line to your playbook:
+strategy: free
+This line should be added at the top level of your playbook, outside of any plays or tasks. It tells Ansible to use the free strategy for all tasks in the playbook.
+
+The free strategy can be useful for running tasks on a large number of hosts, as it can significantly speed up the execution time by running tasks in parallel. However, it can also be more difficult to troubleshoot and debug, as tasks can complete in a different order than they were executed, and errors may not be immediately apparent.
+
+It's important to note that the free strategy should only be used when you're confident that running tasks in parallel won't cause any issues or conflicts. If you're unsure, it's safer to use one of the other strategies (e.g. linear or batch) that provide more control over the order of task execution.
+
+
+------------------------------------------------------------------------------
+•	Serial
+	execute in a serial order
+		either 
+			by a percentage 
+		or 
+			by a fixed number 
+	use  
+		if tasks require a certain level of synchronization
+		tasks need to be performed on specific hosts 
+			before moving on to the next set of hosts. 
+		the "strategy: serial" keyword, 
+			followed by either a percentage or a fixed number.
+
+D:\PraiseTheLord\HSBGInfotech\Others\vilas\ansible\05playbook\strategy
+
+
+The Ansible serial strategy is a connection and execution strategy that allows you to control the order in which tasks are executed on a group of hosts. This is useful when you need to perform tasks that require a specific sequence or when you want to limit the number of hosts that are updated simultaneously to avoid issues or conflicts.
+
+To use the serial strategy, you can add the following line to your playbook:
+
+strategy: serial
+This line should be added at the top level of your playbook, outside of any plays or tasks. It tells Ansible to use the serial strategy for all tasks in the playbook.
+
+You can also specify the number of hosts that should be updated simultaneously by adding the following line to your playbook:
+
+serial: 2
+This line should be added at the play level, and specifies that Ansible should update two hosts at a time. If you have a large number of hosts, you may need to experiment with different values to find the optimal setting.
+
+The serial strategy can be useful when you need to perform tasks that require a specific sequence, or when you want to limit the number of hosts that are updated simultaneously to avoid issues or conflicts. However, it can also slow down the execution time of your playbook, especially if you have a large number of hosts. If you don't have any specific sequencing requirements, it's generally better to use the free strategy to allow Ansible to execute tasks in parallel.
+
+
+------------------------------------------------------------------------------
+•	Custom Strategy
+------------------------------------------------------------------------------
+•	Forks
+
+	number of parallel processes that will be used when executing a playbook or a task. By default, Ansible runs with a single fork, meaning that each task will be executed one after another, in a sequential order.
+
+	However, for large-scale deployments, where multiple hosts or groups of hosts are targeted, using multiple forks can significantly speed up the execution of the playbook or task.
+
+	To specify the number of forks to use, you can pass the --forks or -f option on the command line or include it in the ansible.cfg configuration file. For example, to use 10 forks, you can run the following command:
+
+	ansible-playbook my-playbook.yml -f 10
+	It's important to note that increasing the number of forks also increases the amount of system resources used, including CPU, memory, and network bandwidth. Therefore, it's essential to find the right balance between the number of forks and the available resources on the system.
+
+
+
+	By default, Ansible sets the number of forks to 5, which means that up to 5 hosts can be managed in parallel during a playbook run. This can be increased or decreased by modifying the "forks" setting in the ansible.cfg file or by passing the "-f" or "--forks" option on the command line.
+
+------------------------------------------------------------------------------
+•	Using keywords to control execution
+------------------------------------------------------------------------------
+
+
+Server Management
+------------------------------------------------------------------------------
+•	Authentications in Ansible
+------------------------------------------------------------------------------
+•	SSL and Certificates in Ansibles
+------------------------------------------------------------------------------
+•	Access and Permission Management
+
+Access and permission management in Ansible can be accomplished through the use of inventory files, roles, and playbooks.
+
+	become
+	
+------------------------------------------------------------------------------
+•	Ansible with Docker
+
+	Building Docker images:
+	Managing Docker containers:
+	Managing Docker networks:
+	Deploying Dockerized applications:
+	
+	
+	
+	Install Docker and Ansible:
+Ensure that Docker and Ansible are installed on the host system where you want to build the Docker images.
+
+Create a Dockerfile:
+Create a Dockerfile that defines the steps required to build the Docker image. This file should be placed in a directory on the host system.
+
+Create an Ansible playbook:
+Create an Ansible playbook that specifies the tasks required to build the Docker image. This playbook should include the docker_image module, which will be used to build the Docker image.
+
+Here is an example of an Ansible playbook to build a Docker image:
+
+pip3 install --upgrade docker 
+apt install -y python3-docker
+
+
+- name: Build Docker image
+  hosts: localhost
+  become: yes
+  tasks:
+    - name: Install python docker
+      apt: name=python3-docker state=latest
+    - name: Build Docker image
+      docker_image:
+        build:
+          path: /path/to/dockerfile/directory
+        name: mydockerimage
+        tag: latest
+This playbook uses the docker_image module to build a Docker image named "mydockerimage:latest" from the Dockerfile located in the directory specified in the "path" parameter.
+
+Run the Ansible playbook:
+Run the Ansible playbook using the following command:
+
+
+ansible-playbook build-docker-image.yaml
+This will execute the tasks defined in the playbook and build the Docker image.
+
+Verify the Docker image:
+Verify that the Docker image has been built by running the following command:
+
+
+This will display a list of Docker images on the host system, including the newly built image.
+
+That's it! You have successfully used Ansible to build a Docker image. This approach can be used to automate the building of Docker images in a repeatable and consistent way, which can save time and reduce the risk of human error.
+
+------------------------------------------------------------------------------
+•	Ansible with EKS
+
+
+
+Here is a step-by-step example of how to use Ansible to update configuration on nodes in an Amazon EKS cluster:
+
+Install the AWS CLI and configure access to the EKS cluster:
+Ensure that the AWS CLI is installed on the host system and that you have the necessary AWS credentials to access the EKS cluster.
+
+Install the required Ansible modules:
+Install the Ansible modules required to manage EKS, which can be found in the Ansible AWS collection. You can install the collection using the following command:
+
+
+ansible-galaxy collection install amazon.aws
+Create an Ansible playbook:
+Create an Ansible playbook that specifies the tasks required to update the configuration on nodes in the EKS cluster. This playbook should include the aws_eks_nodegroup module, which will be used to update the configuration.
+Here is an example of an Ansible playbook to update configuration on nodes in an EKS cluster:
+
+
+- name: Update configuration on nodes in EKS cluster
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Update configuration on nodes
+      amazon.aws.aws_eks_nodegroup:
+        name: my-nodegroup
+        cluster_name: my-eks-cluster
+        update_config:
+          kubeletConfig:
+            cpuCfsQuota: "true"
+            cpuCfsPeriod: "100ms"
+This playbook uses the aws_eks_nodegroup module to update the configuration on nodes in the EKS cluster named "my-eks-cluster". The "my-nodegroup" nodegroup is specified as the target for the configuration update.
+
+Run the Ansible playbook:
+Run the Ansible playbook using the following command:
+
+
+ansible-playbook update-config.yaml
+This will execute the tasks defined in the playbook and update the configuration on the nodes in the specified nodegroup.
+
+Verify the configuration update:
+Verify that the configuration has been updated on the nodes by running the following command:
+
+kubectl describe node <node-name>
+This will display detailed information about the specified node, including the updated configuration.
+
+That's it! You have successfully used Ansible to update configuration on nodes in an Amazon EKS cluster. This approach can be used to automate the management and configuration of EKS clusters, which can save time and reduce the risk of human error.
+------------------------------------------------------------------------------
+
+
+Roles in Ansible
+
+Ansible roles 
+	way to organize playbooks 
+		into reusable units of work. 
+	Designed to promote 
+		modularization and 
+		reusability by encapsulating 
+		all the necessary 
+			configuration and 
+			tasks 
+				into a single, self-contained directory structure.
+
+
+
+
+
+		ansible-galaxy role list
+		ansible-galaxy role init vilasrole
+
+
+
+Ansible role 
+	follows a specific directory structure
+	ensure that the role is 
+		organized
+		modular
+		and easy to understand. 
+	
+roles/
+    <role_name>/
+        tasks/
+            main.yml
+        handlers/
+            main.yml
+        templates/
+            <template_file>.j2
+        files/
+            <file>
+        vars/
+            main.yml
+        defaults/
+            main.yml
+        meta/
+            main.yml
+        README.md
+	tasks/: 
+		contains 
+			set of tasks executed 
+				when the role is called. 
+			The main.yml file should be present in this directory
+				should include all the necessary tasks for the role.
+
+	handlers/: 
+		This directory contains handlers 
+			notified by the tasks in the role. 
+		main.yml file should be present 
+			should include all the necessary handlers for the role.
+
+	templates/: 
+		Jinja2 templates 
+		used by the tasks in the role. 
+		used to generate 
+			configuration files
+			scripts
+			or any other text-based files required by the role.
+
+	files/: 
+		files that are used by the tasks in the role. 
+		These files can 	
+			include 
+				binaries, 
+				scripts
+				or any other non-text-based files required by the role.
+
+	vars/: 
+		contains the variables 
+			used by the tasks in the role. 
+		The main.yml file should be present in this directory
+			should include all the necessary variables for the role.
+
+	defaults/: 	
+		contains the default values for the variables used by the role. 
+		These defaults can be overridden by the user when the role is called.
+
+	meta/: 
+		This directory contains metadata about the role
+			including its 
+				dependencies
+				author, and 
+				other relevant information. 
+			The main.yml file 
+				should be present in this directory
+				should include all the necessary metadata for the role.
+
+	README.md: This file should be present in the root of the role directory, and it should include documentation about the role, including how to use it, its purpose, and any other relevant information.
+
+
+
+
+------------------------------------------------------------
+Create the role directory: Create a new directory in your Ansible project called roles and then create a subdirectory with the name of your role, for example webserver. This can be done using the following commands:
+
+
+mkdir -p roles/webserver/tasks
+mkdir -p roles/webserver/handlers
+mkdir -p roles/webserver/templates
+mkdir -p roles/webserver/files
+mkdir -p roles/webserver/vars
+mkdir -p roles/webserver/defaults
+mkdir -p roles/webserver/meta
+
+Create the main.yml files: 
+	In each subdirectory 
+		
+		
+		
+roles/webserver/tasks/main.yml:
+
+---
+- name: Install Apache web server
+  apt:
+    name: apache2
+    state: present
+  notify: restart apache2
+  
+- name: Create index.html file
+  vars:
+    site_title: "My Website"
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    mode: '0644'  
+	
+	
+roles/webserver/handlers/main.yml:
+
+
+
+---
+- name: restart apache2
+  service:
+    name: apache2
+    state: restarted
+
+Create a template: 
+	In the roles/webserver/templates directory
+		create a file called index.html.j2 
+			with the following content:
+
+<html>
+<head>
+    <title>{{ site_title }}</title>
+</head>
+<body>
+    <h1>Welcome to {{ site_title }}!</h1>
+    <p>This is the default web page for {{ site_title }}.</p>
+</body>
+</html>
+
+
+Create a playbook: 
+	Create a 
+		playbook that will use the role. 
+	
+		i.e. file called webserver.yml in the root of your Ansible project with the following content:
+
+
+---
+- hosts: webserver
+  become: yes
+
+  roles:
+    - webserver
+
+Run the playbook: 
+	Finally, run the playbook using the following command:
+
+ansible-playbook webserver.yml -i inventory
+Here, inventory refers to the inventory file that contains the list of hosts where the role will be executed.
+
+That's it! You have now created and used an Ansible role to install and configure Apache web server on a remote host.
+--------------------------------------------------------------------------------
+
+
+Here are some best practices to keep in mind when working with Ansible roles and butt points:
+
+Keep roles small and modular: Roles should be small and focused on a specific task. This makes it easier to reuse them across different playbooks and ensures that each role is easy to understand and maintain.
+
+Use variables to make roles more flexible: Roles can accept variables that are passed in from the playbook or the command line. This allows you to make your roles more flexible and adaptable to different environments.
+
+Use tags to control which butt points are executed: You can use tags to control which butt points are executed during the playbook run. This can help you to avoid running unnecessary tasks and improve the speed and efficiency of your playbooks.
+
+Use include statements to break down complex tasks: You can use include statements to break down complex tasks into smaller, more manageable pieces. This makes it easier to test and debug your roles and makes them more modular and reusable.
+
+Use role dependencies to manage complex configurations: You can use role dependencies to manage complex configurations that require multiple roles to work together. This allows you to break down your configuration into smaller, more manageable pieces and ensures that each role is responsible for a specific set of tasks.
+
+
+------------------------------------------------------------------------------
+•	Understand Role Directory Structure
+
+	done
+------------------------------------------------------------------------------
+•	Using Ansible Roles
+	done
+------------------------------------------------------------------------------
+•	Ansible Role Duplication and Execution
+
+
+Ansible roles are reusable playbooks that can be used to automate repetitive tasks across multiple hosts. When working with Ansible roles, you may encounter situations where you need to duplicate and execute a role. Here's how you can do it:
+
+Duplicate the role: To duplicate an Ansible role, simply copy the role directory to a new directory with a different name. For example, if you want to duplicate a role called webserver, you can copy the webserver directory to a new directory called webserver2.
+
+Update the role name and tasks: Once you have duplicated the role, you need to update the name of the role in the meta/main.yml file and any references to the old role name in the tasks. For example, if you duplicated the webserver role and renamed it to webserver2, you need to update the meta/main.yml file in the webserver2 directory to reflect the new role name:
+
+galaxy_info:
+  author: Your Name
+  description: Role for setting up a web server
+  company: Your Company
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: Ubuntu
+      versions:
+        - bionic
+  galaxy_tags:
+    - webserver
+    - webserver2
+Here, the galaxy_tags list includes both the old and new role names.
+
+Execute the duplicated role: To execute the duplicated role, you can include it in a playbook just like any other role. For example:
+
+---
+- name: Install web server and database
+  hosts: web
+  become: yes
+
+  roles:
+    - webserver
+    - webserver2
+    - database
+Here, both the webserver and webserver2 roles are included in the roles list. When the playbook is executed, both roles will be executed on the target hosts.
+
+That's it! You have now duplicated and executed an Ansible role.
+
+------------------------------------------------------------------------------
+•	Ansible Role Default Variables
+	done
+------------------------------------------------------------------------------
+•	Ansible Role Dependencies
+
+
+Ansible roles can have dependencies on other roles, which means that a role can use tasks, files, templates, or other assets from another role. To specify role dependencies in Ansible, you can use the meta/main.yml file in your role directory. Here's how to define role dependencies:
+
+Create the meta/main.yml file: In your role directory, create a meta directory if it does not exist, and then create a main.yml file inside the meta directory. For example:
+
+
+roles/
+└── webserver/
+    ├── tasks/
+    │   └── main.yml
+    ├── templates/
+    │   └── index.html.j2
+    ├── meta/
+    │   └── main.yml
+    └── README.md
+Define role dependencies: In the meta/main.yml file, use the dependencies keyword to specify the dependencies for your role. For example:
+
+
+dependencies:
+  - { role: common, some_var: 'foo' }
+  - { role: mysql, mysql_root_password: 'password123' }
+Here, the dependencies list includes two roles: common and mysql. The some_var variable is passed to the common role, and the mysql_root_password variable is passed to the mysql role.
+
+Execute the role: When you execute the role, Ansible will automatically download and execute the specified dependencies before executing the tasks in your role. For example, if you have a playbook that includes the webserver role, Ansible will first download and execute the common and mysql roles before executing the tasks in the webserver role.
+That's it! You have now defined dependencies for your Ansible role. Note that you can also specify version constraints for role dependencies, using the version key. For example:
+
+
+
+dependencies:
+  - { role: common, some_var: 'foo', version: ">=1.0.0" }
+  - { role: mysql, mysql_root_password: 'password123', version: ">=2.0.0" }
+Here, the version constraints ensure that the specified roles are only executed if their version is at least 1.0.0 for the common role and at least 2.0.0 for the mysql role.
+
+------------------------------------------------------------------------------
+•	Embedding Modules and Plugins In Roles
+
+
+When you create an Ansible role, you may want to use custom modules or plugins. You can embed these modules and plugins directly in the role directory to ensure they are available when the role is executed. Here's how to embed modules and plugins in an Ansible role:
+
+Create a library directory: In your role directory, create a library directory if it does not exist.
+
+
+roles/
+└── myrole/
+    ├── tasks/
+    │   └── main.yml
+    ├── templates/
+    │   └── config.yml.j2
+    ├── library/
+    └── meta/
+        └── main.yml
+Copy the modules or plugins to the library directory: Copy the custom modules or plugins to the library directory in your role directory. For example, if you have a custom module called my_custom_module.py, copy it to the library directory in your role directory.
+
+
+roles/
+└── myrole/
+    ├── tasks/
+    │   └── main.yml
+    ├── templates/
+    │   └── config.yml.j2
+    ├── library/
+    │   └── my_custom_module.py
+    └── meta/
+        └── main.yml
+Use the custom modules or plugins in your role tasks: In your role tasks, you can use the custom modules or plugins just like any other module or plugin. For example, if you have a task that uses the my_custom_module module, you can include it in your tasks like this:
+
+
+- name: Use my custom module
+  my_custom_module:
+    some_param: "value"
+Add the module or plugin to the documentation: It's a good idea to document the custom modules or plugins you use in your role documentation. You can add the custom module or plugin to the README.md file in your role directory.
+That's it! You have now embedded a custom module or plugin in your Ansible role. Note that this approach can also be used for custom modules or plugins that you want to use across multiple roles. In this case, you can create a separate directory for the custom modules or plugins, and reference them from each role's library directory.
+
+------------------------------------------------------------------------------
+•	Ansible Role Search Path
+
+
+When you execute an Ansible playbook, Ansible searches for roles in a default search path. The search path is a list of directories that Ansible searches in order to find the roles referenced in your playbook. You can also specify additional directories to include in the search path. Here's how it works:
+
+Default search path: The default search path includes the roles directory in the current working directory, as well as any roles installed in the Ansible system-wide roles directory. You can view the default search path by running the following command:
+
+
+ansible-config dump | grep DEFAULT_ROLES_PATH
+The output should look something like this:
+
+
+DEFAULT_ROLES_PATH(default) = ['/etc/ansible/roles', '~/.ansible/roles', './roles']
+This means that Ansible will search for roles in /etc/ansible/roles, ~/.ansible/roles, and ./roles.
+
+Additional search path: You can add additional directories to the search path by specifying the roles_path option in your Ansible configuration file or in your playbook. For example, if you want to add a directory called myroles to the search path, you can add the following to your playbook:
+
+
+- hosts: all
+  roles:
+    - myrole
+  vars:
+    ansible:
+      roles_path:
+        - /path/to/myroles
+Here, the roles_path variable specifies the path to the additional directory. Note that you can specify multiple directories by using a list.
+
+Search order: When searching for roles, Ansible looks in the directories in the search path in the order they are specified. If Ansible finds multiple roles with the same name in different directories, it uses the first one it finds.
+That's it! You now know how Ansible searches for roles and how to add additional directories to the search path.
+
+------------------------------------------------------------------------------
+
+Day5
+Ansible Galaxy
+------------------------------------------------------------------------------
+•	Introduction of Ansible Galaxy Website
+D:\PraiseTheLord\HSBGInfotech\Others\vilas\ansible\galaxy
+
+
+
+Ansible Galaxy is a website that serves as a central repository for Ansible roles. It is a community-driven platform where users can share and collaborate on roles to automate tasks and infrastructure management. Ansible Galaxy provides a web interface to discover and download roles, as well as tools to create, publish, and manage roles.
+
+With Ansible Galaxy, users can easily find and use existing roles without having to create everything from scratch. Roles in Ansible Galaxy can be filtered and sorted by category, popularity, and relevance, making it easy to find the right role for a specific task or use case.
+
+In addition to discovering and using roles, users can also contribute to the Ansible Galaxy community by creating and sharing their own roles. Ansible Galaxy provides tools to create roles with best practices and standards in mind, such as directory structures, documentation, and metadata. Roles can be uploaded to Ansible Galaxy, and users can then review, rate, and comment on them.
+
+Ansible Galaxy also provides features for managing roles, such as versioning, dependencies, and tags. Roles can have multiple versions, and dependencies can be defined in a role's metadata to ensure that required roles are installed before the role is executed. Roles can also be tagged with keywords to make them more discoverable.
+
+Overall, Ansible Galaxy is a valuable resource for the Ansible community, providing a platform for collaboration, sharing, and automation.
+
+------------------------------------------------------------------------------
+•	The command line tool
+
+
+ansible-galaxy is the command line tool that is used to interact with the Ansible Galaxy website. It is installed with Ansible and can be used to manage roles, collections, and other resources on Ansible Galaxy. Here are some of the common commands used with ansible-galaxy:
+
+ansible-galaxy init role_name: Creates a new role with the specified name in the current directory.
+ansible-galaxy install username.role_name: Installs a role from Ansible Galaxy. If a version is not specified, the latest version will be installed.
+ansible-galaxy install -r requirements.yml: Installs roles defined in a requirements.yml file. This file can specify multiple roles and versions, as well as other requirements such as collections.
+ansible-galaxy list: Lists installed roles and their versions.
+ansible-galaxy search search_term: Searches Ansible Galaxy for roles matching the specified search term.
+ansible-galaxy info username.role_name: Displays information about a role, such as its version, dependencies, and tags.
+ansible-galaxy login: Logs in to Ansible Galaxy using your credentials.
+ansible-galaxy upload username.role_name: Uploads a role to Ansible Galaxy. This requires a valid username and API key.
+ansible-galaxy also provides options for managing collections, such as collection install, collection list, collection search, and collection upload.
+
+Overall, ansible-galaxy is a powerful tool for managing Ansible roles and collections, and it streamlines the process of discovering, installing, and sharing roles on Ansible Galaxy.
+
+
+
+------------------------------------------------------------------------------
+•	Search for Roles
+
+ansible-galaxy search search_term: Searches Ansible Galaxy for roles matching the specified search term.
+------------------------------------------------------------------------------
+•	Installing Roles from Ansible Galaxy
+
+To install roles from Ansible Galaxy, you can use the ansible-galaxy command line tool. Here's how to do it:
+
+Open a terminal window and navigate to the directory where you want to install the role.
+
+Use the ansible-galaxy command to install the role. For example, if you want to install the geerlingguy.apache role, you would run the following command:
+
+ansible-galaxy install geerlingguy.apache
+If you want to install a specific version of the role, you can include the version number in the command, like this:
+
+
+ansible-galaxy install geerlingguy.apache,2.8.0
+
+This will install version 2.8.0 of the geerlingguy.apache role.
+
+The role will be installed in the roles directory in your current working directory. You can check that it's there by running ls roles.
+
+
+$ ls roles
+geerlingguy.apache
+You can now use this role in your Ansible playbooks.
+
+
+- hosts: webserver
+  roles:
+    - geerlingguy.apache
+This will apply the geerlingguy.apache role to the webserver hosts.
+
+That's it! Installing roles from Ansible Galaxy is a quick and easy way to add functionality to your Ansible playbooks.
+------------------------------------------------------------------------------
+•	Create roles
+
+	done
+
+------------------------------------------------------------------------------
+•	Authenticate with Galaxy
+
+
+ansible-doc -l | grep mongodb
+
+To authenticate with Ansible Galaxy, you need to have an account on the Ansible Galaxy website. Once you have an account, you can obtain an API key, which is used to authenticate with the Ansible Galaxy API.
+
+Here's how to authenticate with Ansible Galaxy:
+
+Log in to the Ansible Galaxy website with your account credentials.
+
+Click on your user profile in the top right corner and select "Settings" from the dropdown menu.
+
+On the settings page, click on the "API Key" tab.
+
+Click the "Generate New Key" button to create a new API key.
+
+Copy the API key to your clipboard.
+
+Open a terminal window and enter the following command:
+
+
+ansible-galaxy login --token=<API_KEY>
+Replace <API_KEY> with the API key you copied in step 5.
+
+You should see a message indicating that you have successfully logged in to Ansible Galaxy.
+
+
+Logged in successfully.
+You can now use the ansible-galaxy command line tool to interact with Ansible Galaxy resources that require authentication, such as uploading roles.
+
+That's it! Authenticating with Ansible Galaxy is a simple process that enables you to take advantage of the full range of features on the Ansible Galaxy website.
+------------------------------------------------------------------------------
+•	Ansible Galaxy Roles Dependencies
+------------------------------------------------------------------------------
+Ansible Galaxy roles can have dependencies on other roles, which means that a role may require one or more other roles to be installed in order to function properly. When you install a role with dependencies, Ansible Galaxy will automatically install the required roles along with the main role.
+
+Here's how to specify dependencies in an Ansible Galaxy role:
+
+Open the meta/main.yml file in your role's directory.
+
+Add a dependencies section to the file, and list the roles that your role depends on. For example:
+
+
+
+dependencies:
+  - username.role1
+  - username.role2
+Replace username with the username of the role owner, and role1 and role2 with the names of the roles that your role depends on.
+
+Save the file.
+
+When you install your role with dependencies using the ansible-galaxy install command, Ansible Galaxy will automatically download and install the required roles in addition to your role. You can also use a requirements.yml file to install your role with dependencies. Here's an example requirements.yml file:
+
+
+- name: myrole
+  src: git+https://github.com/username/myrole.git
+  version: main
+  dependencies:
+    - name: username.role1
+      src: geerlingguy.apache
+      version: 1.0.0
+    - name: username.role2
+      src: git+https://github.com/username/role2.git
+      version: master
+This file specifies the myrole role as well as its dependencies, which are the username.role1 role from Ansible Galaxy and the role2 role from a Git repository. When you run the ansible-galaxy install -r requirements.yml command, Ansible Galaxy will download and install all three roles and their dependencies.
+
+By specifying dependencies in your Ansible Galaxy role, you can ensure that your role will work correctly with the other roles that are commonly used in your environment.
+
+•	Upload Roles
+------------------------------------------------------------------------------
+Uploading your roles to Ansible Galaxy allows others in the community to discover and use your roles. Here are the steps to upload your role to Ansible Galaxy:
+
+Create an account on Ansible Galaxy website (https://galaxy.ansible.com/).
+
+Create a new GitHub repository for your role, or use an existing one.
+
+Add a meta/main.yml file to your role's directory, with the necessary metadata. See the Ansible Galaxy documentation for details on the metadata format.
+
+Commit your changes to your Git repository.
+
+Create a release tag for your role in your Git repository. The release tag should be in the format vX.Y.Z, where X, Y, and Z are the major, minor, and patch version numbers of your role.
+
+In a terminal window, navigate to your role's directory.
+
+Run the ansible-galaxy login command to authenticate with Ansible Galaxy using your account API key.
+
+Run the ansible-galaxy role init command to create a galaxy.yml file in your role's directory. This file specifies the name and description of your role, as well as the version and other metadata.
+
+Run the ansible-galaxy role publish command to publish your role to Ansible Galaxy. This command will create a new release of your role on Ansible Galaxy and upload the role files.
+
+
+
+ansible-galaxy role publish <role-name> --token=<API_KEY>
+Replace <role-name> with the name of your role, and <API_KEY> with your Ansible Galaxy API key.
+
+Verify that your role is now available on Ansible Galaxy by searching for it on the website.
+
+Congratulations, you have successfully uploaded your role to Ansible Galaxy!
+
+------------------------------------------------------------------------------
+
+
+
+
+Ansible Vault
+
+
+D:\PraiseTheLord\HSBGInfotech\Others\vilas\ansible\vault
+
+------------------------------------------------------------------------------
+•	Use cases of Ansible Vault
+
+
+Ansible Vault is a feature of Ansible that allows you to encrypt sensitive data, such as passwords, API keys, and other credentials, in your playbooks and roles. Here are some common use cases of Ansible Vault:
+
+Storing credentials: You can use Ansible Vault to securely store credentials for various services, such as databases, cloud services, and third-party APIs. By encrypting these credentials with Ansible Vault, you can prevent unauthorized access to sensitive data.
+
+Protecting secrets in version control: Ansible Vault is also useful for storing secrets in version control. By encrypting sensitive data with Ansible Vault, you can safely commit it to your repository without worrying about exposing it to unauthorized users.
+
+Sharing sensitive data with team members: Ansible Vault can also be used to securely share sensitive data with team members. By encrypting data with Ansible Vault, you can safely share it with other team members without worrying about unauthorized access.
+
+Integrating with Continuous Integration and Deployment (CI/CD) pipelines: Ansible Vault can be integrated into CI/CD pipelines to securely pass sensitive data between different stages of the pipeline. By encrypting sensitive data with Ansible Vault, you can ensure that it is not exposed to unauthorized users during the deployment process.
+
+Compliance: Many organizations are required to comply with various security regulations, such as HIPAA, PCI DSS, and GDPR. Ansible Vault can help you meet these compliance requirements by providing a secure way to store and manage sensitive data.
+
+Overall, Ansible Vault is a powerful tool for securing sensitive data in your Ansible playbooks and roles. By using Ansible Vault, you can ensure that your credentials and other sensitive data are protected from unauthorized access.
+
+------------------------------------------------------------------------------
+•	Creating Encrypted Files
+------------------------------------------------------------------------------
+•	Editing Encrypted Files
+------------------------------------------------------------------------------
+•	Rekeying Encrypted Files
+------------------------------------------------------------------------------
+•	Decrypting Encrypted Files
+------------------------------------------------------------------------------
+•	Viewing Encrypted Files
+------------------------------------------------------------------------------
+•	Using Ansible Vault
+------------------------------------------------------------------------------
+
+Day6
+------------------------------------------------------------------------------
+Ansible integration with AWS CI/CD
+------------------------------------------------------------------------------
+•	Create a pipeline project to 
+------------------------------------------------------------------------------
+o	download the code from github
+------------------------------------------------------------------------------
+o	build the war file using maven
+------------------------------------------------------------------------------
+o	create a docker image 
+------------------------------------------------------------------------------
+o	create a docker container
+------------------------------------------------------------------------------
+o	run automated test cases against docker container.
+------------------------------------------------------------------------------
+o	Deploy the image into an EKS cluster
+------------------------------------------------------------------------------
+
+
+
+
+Ansible Collections
+
+
+Ansible Collections are a new way of packaging and distributing Ansible content, including modules, plugins, roles, and playbooks. Collections provide a standardized way of organizing and sharing Ansible content, making it easier for users to find and use content created by others.
+
+Collections are built on top of the existing Ansible modules and plugins architecture, and they provide a number of benefits over the traditional approach of sharing content through roles and playbooks:
+
+Better organization: Collections provide a hierarchical organization of content, making it easier to find and use modules, plugins, roles, and playbooks.
+
+Simplified distribution: Collections can be easily shared and installed using the Ansible Galaxy website or the Ansible CLI.
+
+Better versioning: Collections have their own versioning system, allowing for better management of changes and dependencies.
+
+Improved collaboration: Collections make it easier for multiple users to collaborate on the same content by providing a standard structure and workflow.
+
+Expanded functionality: Collections provide a way to package and distribute new types of content, such as network modules and cloud modules.
+
+Collections are composed of one or more content types, including modules, plugins, roles, and playbooks. They are designed to be flexible and modular, allowing users to select only the content they need. Collections can be installed globally or locally, and they can be used in conjunction with other Ansible content, such as roles and playbooks.
+
+Overall, Ansible Collections provide a powerful new way of organizing and sharing Ansible content, making it easier for users to find and use content created by others, and enabling collaboration and innovation within the Ansible community.
+
+
+
+An Ansible Collection is a bundle of Ansible content, which can include roles, modules, plugins, playbooks, and other content. Collections are created and maintained by the community and can be installed via the Ansible Galaxy or the Ansible Collection Hub.
+
+Here are the steps to create and use an Ansible Collection:
+
+Install Ansible and create a project directory:
+
+
+
+
+$ mkdir myproject && cd myproject
+Initialize a new collection:
+
+
+$ ansible-galaxy collection init mycollection
+This will create a new directory called "mycollection" with the following structure:
+
+Copy code
+mycollection/
+├── docs
+│   ├── README.md
+├── plugins
+│   ├── module_utils
+│   ├── modules
+├── roles
+├── galaxy.yml
+├── LICENSE
+└── README.md
+Create a new role:
+shell
+Copy code
+$ ansible-galaxy role init mycollection/myrole
+This will create a new role called "myrole" inside the "mycollection" directory.
+
+Add content to the role:
+Add any files, tasks, and templates to the role directory.
+
+Build the collection:
+ruby
+Copy code
+$ ansible-galaxy collection build mycollection/
+This will create a tar.gz file in the "mycollection" directory.
+
+Install the collection:
+ruby
+Copy code
+$ ansible-galaxy collection install mycollection-1.0.0.tar.gz
+This will install the collection to the default location of ~/.ansible/collections.
+
+Use the collection in a playbook:
+yaml
+Copy code
+- name: My playbook
+  hosts: all
+  collections:
+    - mycollection
+  roles:
+    - mycollection.myrole
+That's it! You can now use your custom collection in your Ansible playbooks.
+
+
+------------------------------------------------------------------------------
+•	Installing Collections
+
+
+
+There are a few different ways to install Ansible Collections, depending on your specific needs and use case. Here are some of the most common methods:
+
+Installing Collections from Ansible Galaxy: The easiest way to install a Collection is through the Ansible Galaxy website. You can search for the Collection you need, and then install it using the "ansible-galaxy collection install" command. For example, to install the "amazon.aws" Collection, you can run:
+
+ansible-galaxy collection install amazon.aws
+
+Installing Collections from a YAML file: If you have a list of Collections you need to install, you can create a YAML file with the Collection names and versions, and then use the "ansible-galaxy collection install" command with the "--requirements-file" option to install all the Collections at once. For example, if you have a file named "collections.yml" with the following content:
+
+
+collections:
+  - name: amazon.aws
+    version: 1.4.0
+  - name: community.general
+    version: 3.3.0
+You can run the following command to install all the Collections listed in the file:
+
+
+ansible-galaxy collection install --requirements-file collections.yml
+Installing Collections from a local directory: If you have a Collection that you have downloaded or created locally, you can install it using the "ansible-galaxy collection install" command with the "--force" option and the path to the Collection directory. For example, if you have a Collection directory named "mycollection" in your home directory, you can install it with the following command:
+
+
+ansible-galaxy collection install --force ~/mycollection
+Once you have installed a Collection, you can use its modules, plugins, roles, and playbooks in your Ansible code by referencing them with the Collection name and the content type. For example, to use a module from the "amazon.aws" Collection, you can use the following syntax:
+
+
+
+- name: Create an EC2 instance
+  amazon.aws.ec2_instance:
+    name: my-instance
+    instance_type: t2.micro
+    ami: ami-0c55b159cbfafe1f0
+Overall, installing Ansible Collections is a straightforward process that can greatly expand the functionality of your Ansible code.
+
+------------------------------------------------------------------------------
+•	Downloading Collections
+
+
+You can download Ansible Collections from a variety of sources, including:
+
+Ansible Galaxy: Ansible Galaxy is a repository of Ansible content, including Collections, roles, modules, and plugins. You can search for and download Collections from the Galaxy website using the "ansible-galaxy" command-line tool. For example, to download the "amazon.aws" Collection, you can run:
+
+
+
+ansible-galaxy collection download amazon.aws
+This will download the latest version of the Collection to your current directory.
+
+GitHub: Many Ansible Collections are hosted on GitHub, and you can download them directly from their repositories. For example, to download the latest version of the "cisco.ios" Collection from GitHub, you can run:
+
+
+git clone https://github.com/cisco-network-automation/ansible-collection-ios.git
+This will clone the repository to your current directory.
+
+Tarball or ZIP archive: Some Collections may be distributed as tarballs or ZIP archives that you can download from their official websites or other sources. For example, to download the latest version of the "mycollection" Collection as a tarball from its website, you can run:
+
+
+wget https://www.mycollection.com/mycollection-latest.tar.gz
+tar xzf mycollection-latest.tar.gz
+This will download and extract the tarball to your current directory.
+
+Once you have downloaded a Collection, you can use it in your Ansible code by referencing it with the Collection name and the content type. For example, to use a module from the "amazon.aws" Collection that you downloaded from Ansible Galaxy, you can use the following syntax:
+
+
+- name: Create an EC2 instance
+  amazon.aws.ec2_instance:
+    name: my-instance
+    instance_type: t2.micro
+    ami: ami-0c55b159cbfafe1f0
+Overall, downloading Ansible Collections is a simple process that can greatly expand the functionality of your Ansible code.
+------------------------------------------------------------------------------
+•	Listing Collections
+
+You can use the ansible-galaxy command-line tool to list the installed Collections on your system. To list all the installed Collections, simply run:
+
+
+ansible-galaxy collection list
+This will display a table of all the installed Collections, including their names, versions, and authors.
+
+If you want to list the details of a specific Collection, you can use the info subcommand. For example, to display information about the "amazon.aws" Collection, you can run:
+
+
+
+ansible-galaxy collection info amazon.aws
+This will display detailed information about the Collection, including its name, version, description, and dependencies.
+
+In addition to listing installed Collections, you can also search for Collections on Ansible Galaxy using the search subcommand. For example, to search for Collections related to AWS, you can run:
+
+
+ansible-galaxy collection search aws
+This will display a list of Collections that match the search term "aws", including their names, authors, and descriptions.
+
+Overall, the ansible-galaxy command-line tool provides a convenient way to manage and explore Ansible Collections on your system.
+------------------------------------------------------------------------------
+•	Verifying collections
+
+
+
+You can use the ansible-galaxy command-line tool to verify the integrity of an installed Collection to ensure that it has not been tampered with. The verification process checks the digital signature of the Collection and its dependencies to ensure that they have not been modified.
+
+To verify an installed Collection, run the following command:
+
+ansible-galaxy collection verify <collection-name>
+Replace <collection-name> with the name of the Collection you want to verify. For example, to verify the "amazon.aws" Collection, you can run:
+
+
+ansible-galaxy collection verify amazon.aws
+This will perform the verification process and display the results. If the verification is successful, you will see a message indicating that the Collection has passed verification. If the verification fails, you should investigate further to determine why the Collection failed verification.
+
+By default, Ansible will automatically verify the digital signatures of all Collections and dependencies that it uses during a playbook run. However, you can disable this behavior by setting the ansible_collections_require_validation variable to false in your Ansible configuration file.
+
+Overall, verifying Collections is an important security practice that helps ensure the integrity of the code you use in your infrastructure automation.
+------------------------------------------------------------------------------
+•	Using collections in a playbook
+
+
+To use a Collection in an Ansible playbook, you need to include it in the collections section of your ansible.cfg configuration file or in the collections keyword in your playbook. This tells Ansible where to find the Collection and its modules.
+
+Here's an example of how to include the amazon.aws Collection in a playbook:
+
+---
+- name: Example playbook using an Ansible Collection
+  hosts: all
+  collections:
+    - amazon.aws
+  tasks:
+    - name: List all EC2 instances
+      ec2_instance_facts:
+      register: ec2_facts
+    - name: Print EC2 instance facts
+      debug:
+        var: ec2_facts
+In this example, the collections keyword is used to specify the amazon.aws Collection. The ec2_instance_facts module from this Collection is then used to gather information about all EC2 instances in the inventory. The register keyword is used to save the output of the module to a variable called ec2_facts, which is then printed to the console using the debug module.
+
+You can also use modules from multiple Collections in the same playbook. Simply add the names of the Collections you want to use to the collections keyword, separated by commas. For example:
+
+
+---
+- name: Example playbook using multiple Ansible Collections
+  hosts: all
+  collections:
+    - amazon.aws
+    - community.general
+  tasks:
+    - name: List all EC2 instances
+      ec2_instance_facts:
+      register: ec2_facts
+    - name: Install Apache web server
+      community.general.apk:
+        name: apache2
+In this example, both the amazon.aws and community.general Collections are included in the collections keyword. The ec2_instance_facts module from the amazon.aws Collection is used to gather information about EC2 instances, and the community.general.apk module from the community.general Collection is used to install the Apache web server.
+
+Overall, using Collections in Ansible allows you to take advantage of a wide range of community-maintained modules and plugins, which can help streamline your automation tasks and improve the reliability of your infrastructure.
+------------------------------------------------------------------------------
+•	Using collections in roles
+
+Using Collections in Ansible Roles follows the same approach as using them in a playbook. You need to include the Collection in the collections section of your ansible.cfg configuration file or in the collections keyword in your role.
+
+Here's an example of how to include the amazon.aws Collection in a role:
+
+In your Ansible Role, create a requirements.yml file and add the Collection name and version as follows:
+
+
+---
+collections:
+  - name: amazon.aws
+    version: 1.4.0
+Run the following command to install the Collection:
+
+
+ansible-galaxy collection install -r requirements.yml
+This will install the amazon.aws Collection and its dependencies in the ~/.ansible/collections directory.
+
+In your Ansible Role tasks, you can use modules from the Collection as follows:
+
+---
+- name: Example Ansible Role using an Ansible Collection
+  hosts: all
+  tasks:
+    - name: List all EC2 instances
+      amazon.aws.ec2_instance_facts:
+      register: ec2_facts
+    - name: Print EC2 instance facts
+      debug:
+        var: ec2_facts
+In this example, the amazon.aws.ec2_instance_facts module from the amazon.aws Collection is used to gather information about EC2 instances. The register keyword is used to save the output of the module to a variable called ec2_facts, which is then printed to the console using the debug module.
+
+You can also use modules from multiple Collections in the same Ansible Role. Simply add the names of the Collections you want to use to the collections keyword, separated by commas.
+
+Using Collections in Ansible Roles allows you to take advantage of a wide range of community-maintained modules and plugins, which can help streamline your automation tasks and improve the reliability of your infrastructure.
+
+
+
+
+------------------------------------------------------------------------------
+•	Using a playbook from a collection
+
+
+To use a playbook from a Collection, you need to specify the Collection name and the playbook filename in the ansible-playbook command.
+
+Here's an example of how to use a playbook from a Collection:
+
+Install the Collection by running the following command:
+ansible-galaxy collection install <collection-name>
+For example, to install the community.general Collection, run the following command:
+
+
+
+ansible-galaxy collection install community.general
+Create a new playbook called my_playbook.yml that uses a role from the Collection:
+
+---
+- name: My playbook
+  hosts: all
+  become: true
+  roles:
+    - role: community.general.my_role
+In this example, the community.general.my_role role from the community.general Collection is used.
+
+Run the playbook using the ansible-playbook command, specifying the Collection name and playbook filename:
+
+
+ansible-playbook -i inventory.ini -c ssh -u myuser --private-key mykey.pem --ask-become-pass --collections community.general my_playbook.yml
+In this example, the -collections flag is used to specify the community.general Collection, and my_playbook.yml is the name of the playbook to execute.
+
+Using playbooks from Collections allows you to leverage existing code and best practices from the community, making your automation tasks more efficient and effective. It also makes it easier to manage and maintain your automation code.
+------------------------------------------------------------------------------
+
+Ansible Towers
+------------------------------------------------------------------------------
+•	Introduction to Ansible Tower
+
+
+
+Ansible Tower is a web-based interface and automation platform that makes it easy to manage and scale your Ansible automation. It provides a graphical dashboard for centralized management of your Ansible infrastructure, as well as role-based access control, job scheduling, and other enterprise-level features.
+
+Some key features of Ansible Tower include:
+
+	Centralized dashboard: Ansible Tower provides a single, web-based dashboard for managing all of your Ansible infrastructure, making it easy to monitor and manage your automation tasks.
+
+	Role-based access control: With Ansible Tower, you can set up different access levels for different users, making it easy to delegate tasks and manage access to sensitive information.
+
+	Job scheduling: Ansible Tower makes it easy to schedule and run automation jobs, whether it's a one-time task or a recurring job.
+
+	Real-time job monitoring: Ansible Tower provides real-time monitoring of your automation tasks, allowing you to quickly identify and resolve any issues that arise.
+
+	REST API: Ansible Tower provides a REST API for programmatic access to the platform, making it easy to integrate with other tools and systems.
+
+	Multi-tenancy: Ansible Tower supports multi-tenancy, allowing you to manage multiple environments or organizations within a single Tower instance.
+
+	Overall, Ansible Tower is a powerful tool for managing and scaling your Ansible automation, providing enterprise-level features and a user-friendly interface for managing your infrastructure.
+
+------------------------------------------------------------------------------
+•	Installing Ansible Tower
+
+The installation process for Ansible Tower involves several steps, including downloading the installation package, configuring the system requirements, and running the installer. Here's an overview of the process:
+
+Obtain a license: Ansible Tower is a commercial product, so you'll need to obtain a license from Red Hat in order to use it. You can request a trial license or purchase a license from the Red Hat website.
+
+Download the installation package: Once you have a license, you can download the installation package from the Red Hat website. You'll need to download the package that's compatible with your operating system.
+
+Configure the system requirements: Before installing Ansible Tower, you'll need to make sure your system meets the minimum requirements. These requirements vary depending on your operating system, so be sure to check the Ansible Tower documentation for details.
+
+Run the installer: Once you've downloaded the installation package and configured the system requirements, you can run the installer. The installer will guide you through the installation process, including configuring the database, creating an administrator account, and setting up the web server.
+
+Access the web interface: After the installation is complete, you can access the Ansible Tower web interface by opening a web browser and navigating to the URL of your Ansible Tower server. From there, you can log in with your administrator account and start using Ansible Tower.
+
+It's important to note that Ansible Tower is a complex tool with many configuration options and integrations. It's recommended that you review the Ansible Tower documentation and seek professional assistance if you're new to Ansible or unsure about any aspect of the installation or configuration process.
+
+
+
+http://redhatgov.io/workshops/ansible_automation/exercise2.0/
+
+
+------------------------------------------------------------------------------
+•	Features and capabilities of Ansible Tower
+------------------------------------------------------------------------------
+•	Role based access controls
+------------------------------------------------------------------------------
+•	Creating and managing inventories and credentials
+------------------------------------------------------------------------------
+•	Managing a cluster from Ansible Tower
+------------------------------------------------------------------------------
+
+Troubleshooting
+---------------
+
+Verbose output:
+By running Ansible with the -v or -vv option, you can enable verbose output that provides additional information about what Ansible is doing during playbook execution. This can help identify issues and provide insights into the execution process.
+
+Debug module:
+The debug module can be used to display the values of variables and other information during playbook execution. By inserting debug tasks at strategic points in your playbook, you can gain insight into the state of the system and identify issues that may be causing problems.
+
+Check mode:
+By running Ansible with the --check or -C option, you can enable check mode, which allows you to perform a dry run of the playbook without actually making any changes to the target system. This can help identify potential issues and provide insights into what changes will be made during playbook execution.
+
+Ansible-pull:
+If you are experiencing issues with your Ansible control node, you can use the ansible-pull command to execute a playbook on remote nodes. This can help identify issues with the control node and provide insights into the execution process.
+
+Ansible Tower/AWX:
+Ansible Tower/AWX is a web-based GUI that provides a centralized interface for managing Ansible playbooks and provides features such as scheduling, notifications, and role-based access control. Using Ansible Tower/AWX, you can monitor playbook execution and troubleshoot issues in real-time.
+
+Logging and error messages:
+Ansible logs all output to a log file, which can be useful for troubleshooting issues. Additionally, error messages are displayed in red during playbook execution, making it easy to identify issues as they occur.
+
+--step --start-at-step 
+	for line by debugging

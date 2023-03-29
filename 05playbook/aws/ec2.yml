@@ -1,0 +1,15 @@
+- name: Create a ec2 instance
+  hosts: localhost
+
+  tasks:
+        - ec2_instance:
+            name: "public-compute-instance"#The four space before this is mandatory.
+            key_name: "vilasvirginia"
+            vpc_subnet_id: subnet-422e4a25
+            instance_type:
+            security_group: default
+            network:
+              assign_public_ip: true
+            image_id: ami-02f3f602d23f1659d
+            tags:
+              Environment: Testing

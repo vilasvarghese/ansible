@@ -1,0 +1,70 @@
+1. vars_files 
+----------
+	include a list of variable files directly in a playbook or role. 
+	When you use vars_files
+		Ansible will 
+			read in the variables from the specified files 
+			override them with any variables that have already been defined for the playbook or role. 
+			The variables from the files will take precedence over any variables defined previously.
+
+For example:
+
+vars_files:
+  - vars/defaults.yml
+  - vars/extra_vars.yml
+
+This will include two variable files
+	defaults.yml and extra_vars.yml
+
+
+		
+lab:	1. ansible-playbook 1external_vars.yml
+
+
+2. From command prompt
+-------------------
+The values can also be passed using -e from command prompt
+
+lab:	2.  ansible-playbook 2external_vars.yml -e  '{"var1":"loc2"}' -vv
+
+
+
+3. include_vars
+------------
+	a task 
+		load variables from a file or a template at runtime. 
+		You can specify the path to the file using a variable, which can be dynamically generated.
+
+For example:
+
+
+task: 
+  - name: Load variables from a file
+    include_vars:
+      file: "{{ playbook_dir }}/vars/defaults.yml"
+
+include_vars 
+	more flexible than vars_files
+	load variables at runtime based on dynamic conditions. 
+	but cumbersome 
+		requires separate task for each variable file you want to include.
+	var_files can load list of files together
+	
+lab: 3. ansible-playbook 3include-variables.yml
+
+4. Conditional include
+----------------------
+ansible-playbook 4conditional_include.yml
+
+
+5. Dyanmic include (file name dynamically populated)
+--------------------------------------------
+ ansible-playbook 5dynamic_include.yml
+ 
+
+6. Prompts for variables
+----------------------
+
+ansible-playbook 6prompt_variables.yml
+
+

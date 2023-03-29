@@ -2,5 +2,11 @@
   hosts: localhost
   tasks:
     - include_vars: vars/name_vars.yml
-
     - debug: msg="Hello, {{ name }}!"
+    
+    - name: Sleep
+      pause: 
+        seconds: 300
+    - include_vars: vars/name_vars.yml
+    - name: Print Again
+      - debug: msg="Hello1, {{ name }}!"
