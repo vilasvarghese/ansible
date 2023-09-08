@@ -13,7 +13,7 @@ Steps to use Ansible Vault
 		
 	To persist	
 		nano ~/.bashrc
-			export EDITOR=nano
+			export EDITOR=vi
 			
 	Confirm the EDITOR		
 		echo $EDITOR
@@ -50,7 +50,7 @@ Steps to use Ansible Vault
 			Secret information
 
 			Once we close the file Ansible will encrypt the contents. 
-		d) Verif the content 
+		d) Verify the content 
 				cat vault.yml
 
 			Output

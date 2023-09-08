@@ -1,0 +1,131 @@
+---
+- name: Setup Ubuntu Jenkins CICD
+  hosts: cicd
+  become: true
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+    - name: Install Java 11
+      apt:
+        name: openjdk-11-jdk
+        state: present
+    - name: Install Maven
+      apt:
+        name: maven
+        state: present
+    - name: Download Jenkins GPG Key
+      apt_key:
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+        state: present
+    - name: Download Jenkins debian package
+      apt_repository:
+        repo: "deb http://pkg.jenkins.io/debian-stable binary/"
+        filename: /etc/apt/sources.list.d/jenkins.list
+        state: present
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        state: latest
+    - name: Download Docker pre-requisite packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - software-properties-common
+        state: present
+    - name: Download Docker GPG Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: Download Docker debian package
+      apt_repository:
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+        state: present
+    - name: Install Docker from Docker Repo
+      command: apt-cache policy docker-ce
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+    - name: Enable jenkins user to execute docker commands
+      user:
+        name: jenkins
+        groups: docker
+    - name: Restart Jenkins
+      service:
+        name: jenkins
+        state: restarted
+    - name: Get CICD hostname
+      setup:
+        filter: ansible_hostname
+      register: hostname
+    - name: Print the CICD hostname
+      debug:
+        var: hostname.ansible_facts.ansible_hostname
+      #- name: Get Jenkins Initial Admin Password
+      #fetch:
+      #src: /var/lib/jenkins/secrets/initialAdminPassword
+      #dest: /tmp/initPassword 
+    - name: Look for file
+      command: cat /var/lib/jenkins/secrets/initialAdminPassword
+      register: initialAdminPassword
+    - name: Print initialAdminPassword
+      debug:
+        var: initialAdminPassword.stdout
+    - name: unlock and add admin user
+      jenkins_script:
+        script: |
+          import jenkins.model.*
+          import hudson.security.*
+          def instance = Jenkins.getInstance()
+          def hudsonRealm = new HudsonPrivateSecurityRealm(false)
+          hudsonRealm.createAccount('jenkins', '${user_pwd}')
+          instance.setSecurityRealm(hudsonRealm)
+          def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
+          strategy.setAllowAnonymousRead(false)
+          instance.setAuthorizationStrategy(strategy)
+          instance.save()
+        user: admin
+        password: "{{ initialAdminPassword.stdout }}"
+    - name: complete setup wizard
+      jenkins_script:
+        script: |
+          import static jenkins.model.Jenkins.instance as jenkins
+          import jenkins.install.InstallState
+          if (!jenkins.installState.isSetupComplete()) {
+            InstallState.INITIAL_SETUP_COMPLETED.initializeState()
+          }
+        user: admin
+        password: "{{ initialAdminPassword.stdout }}"
+    - name: Ensure groovy csrf error is bypassed
+      become: yes
+      lineinfile:
+        path: /etc/default/jenkins
+        line: 'JAVA_ARGS="$JAVA_ARGS -Dhudson.security.csrf.DefaultCrumbIssuer.EXCLUDE_SESSION_ID=true"'
+        create: yes
+    - name: Install Jenkins Plugins
+      jenkins_plugin:
+        name:
+          - build-pipeline-plugin
+          - git
+          - ssh
+          - workflow-aggregator
+        state: latest
+        url_username: admin
+        url_password: "{{ initialAdminPassword.stdout }}"
+        with_dependencies: true
+#References:
+#https://stackoverflow.com/questions/36604504/configure-jenkins-2-0-with-ansible
+#http://knowledgevault-sharing.blogspot.com/2018/03/set-up-jenkins-with-ansible.html
+    - name: Create initialization scripts directory
+      file: path={{ jenkins.home }}/init.groovy.d
+            state=directory
+            owner=jenkins
+            group=jenkins
+            mode=0775
+
+    - name: Add initialization script to setup basic security
+      template: src=security.groovy.j2
+            dest={{ jenkins.home }}/init.groovy.d/security.groovy
+

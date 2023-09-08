@@ -1,0 +1,93 @@
+---
+- name: Install JDK 11, Jenkins, Maven, and Docker
+  hosts: ubuntu
+  become: true
+
+  tasks:
+  - name: Update apt cache
+    apt:
+      update_cache: yes
+
+  - name: Install JDK 11
+    apt:
+      name: openjdk-11-jdk
+      state: present
+
+  vars:
+    jenkins_version: "2.277.4" # Change this to the desired version
+
+  tasks:
+  - name: Install Jenkins repository key
+    apt_key:
+      url: "https://pkg.jenkins.io/debian-stable/jenkins.io.key"
+      state: present
+	#Verify apt-key list  
+
+  - name: Add Jenkins repository to sources list
+    apt_repository:
+      repo: "deb https://pkg.jenkins.io/debian-stable binary/"
+	  filename: /etc/apt/sources.list.d/jenkins
+      state: present
+
+  - name: Install Jenkins
+    apt:
+      name: jenkins={{ jenkins_version }}
+      state: present
+
+  - name: Start Jenkins service
+    service:
+      name: jenkins
+      state: started
+
+  - name: Install Maven
+    apt:
+      name: maven
+      state: present
+
+  - name: Install Docker
+    shell: curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh
+
+  - name: Add jenkins user to docker group
+    user:
+      name: jenkins
+      groups: docker
+
+
+  - name: Wait for Jenkins to start up
+    wait_for:
+      host: localhost
+      port: 8080
+      delay: 5
+      timeout: 60
+
+  tasks:
+  - name: Get IP address
+    debug:
+      var: hostvars[inventory_hostname]['ansible_ec2_private_ip_address']
+
+  - name: Install Jenkins plugins
+    jenkins_plugin:
+      name:
+        - git
+        - ssh
+        - workflow-aggregator
+        - pipeline-utility-steps
+      state: latest
+      url: http://localhost:8080
+
+  - name: Create Jenkins admin user
+    jenkins_user:
+      name: admin
+      password: your_password_here
+      email: your_email_here
+      state: present
+      url: http://localhost:8080
+
+  - name: Create Jenkins pipeline job
+    jenkins_job:
+      name: your_job_name_here
+      config: "{{ lookup('file', 'your_job_config.xml') }}"
+      state: present
+      url: http://localhost:8080
+      user: admin
+      password: your_password_here	  

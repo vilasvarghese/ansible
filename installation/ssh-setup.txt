@@ -16,7 +16,7 @@ Do the following on all nodes.
 
 
 
-centos
+centos (on worker/slave nodes)
 	Without this user would be prompted for sudo user's access issue.
 	Making yourself a super user. Open /etc/sudoers. Make sure following two lines are uncommented:
 	## Allows people in group wheel to run all commands
@@ -32,7 +32,7 @@ centos
 	usermod -aG wheel vilas
 	
 	
-ubuntu
+ubuntu (on worker/slave nodes)
 	usermod -aG sudo <yourname> 
 	usermod -aG sudo vilas
 	https://code-maven.com/enable-ansible-passwordless-sudo
@@ -72,6 +72,7 @@ ubuntu
 
 
 #Do the following on source (server)
+	sudo su - vilas 
 	ssh-keygen -t rsa
 
 	ssh-copy-id vilas@<ip> 

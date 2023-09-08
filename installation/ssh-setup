@@ -1,3 +1,7 @@
+---------------------------------------
+Preferably refer other ssh-setup.txt
+--------------------------------------
+
 Check security group to ensure you have given access
 
 sudo su
@@ -10,7 +14,7 @@ passwd vilas
 	in ubuntu
 		usermod -aG sudo vilas
 		su - vilas
-		groups newuser
+		groups vilas 
 		
 in centos
 	Making yourself a super user. Open /etc/sudoers. Make sure following two lines are uncommented:

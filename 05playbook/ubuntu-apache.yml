@@ -1,0 +1,26 @@
+---
+- name: Install Apache on Ubuntu
+  hosts: all # Replace with your target host or group
+  become: yes  # Use sudo to execute tasks
+
+  tasks:
+    - name: Update APT package cache
+      apt:
+        update_cache: yes
+      tags:
+        - update
+
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+      tags:
+        - install
+
+    - name: Start Apache service
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+      tags:
+        - start

@@ -28,6 +28,18 @@ Installing Ansible on RHEL/CentOS
 	$ sudo apt-add-repository --yes --update ppa:ansible/ansible
 	$ sudo apt install -y ansible
 
+	or
+	
+	sudo apt update
+	sudo apt upgrade
+	sudo apt install python3 python3-pip
+	sudo apt-get install software-properties-common
+	sudo apt-add-repository --yes --update ppa:ansible/ansible
+	sudo apt install python3-pip #only if pip3 is missing 
+	#sudo apt-get install ansible
+	pip3 install --user ansible
+	export PATH=$PATH:/home/vilas/.local/bin/
+	ansible --version
 
 
 Detailed reference:	https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#managed-node-requirements

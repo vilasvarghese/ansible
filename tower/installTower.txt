@@ -8,7 +8,7 @@ Modified by Vilas Varghese
 Pre-requisite
 --------------
 
-TBD: 40 GB Hard disk CentOS 7 or RHEL 7 64X box
+TBD: 40 GB Hard disk CentOS 7 or RHEL 7 64X box large
 
 
 ---------------------------------------------------------------
@@ -110,6 +110,13 @@ sudo ./setup.sh
 Step 7 will take approx. 10-15 minutes to complete. This may be a good time to take a break.
 Step 8: Confirm results
 At this point, your Ansible Tower installation should be complete. You can access your Tower (not forgetting that workshopname is the name of your workshop, and # is your student number) at:
+
+
+sudo ./setup -k #if certificate failure
+
+ansible-tower-service restart
+
+
 
 example-tower0.example.redhatgov.io
 Ensuring Installation Success

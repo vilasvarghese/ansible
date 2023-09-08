@@ -1,0 +1,82 @@
+Objective: Create an Ansible role to install and configure the Nginx web server on a remote host.
+
+Prerequisites:
+
+    Ansible installed on your control machine.
+    A target host where you want to install Nginx.
+
+Step 1: Create the Role Directory Structure
+
+Ansible roles follow a specific directory structure. You can use the ansible-galaxy command to generate the initial structure:
+
+bash
+
+ansible-galaxy init nginx_role
+
+This command creates a directory named nginx_role with the necessary subdirectories and files.
+
+Step 2: Define Role Tasks
+
+Edit the tasks/main.yml file inside the role directory (nginx_role/tasks/main.yml) to define the tasks for your role. Add the following content:
+
+yaml
+
+---
+- name: Update APT package cache
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: Install Nginx
+  become: yes
+  apt:
+    name: nginx
+    state: present
+
+- name: Start Nginx service
+  become: yes
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+These tasks will update the package cache, install Nginx, and start the Nginx service on the target host.
+
+Step 3: Create Role Variables (Optional)
+
+You can define variables for your role in the defaults/main.yml file (nginx_role/defaults/main.yml). For this simple example, we won't define any variables, but you can do so if your role requires customizable options.
+
+Step 4: Create a Playbook to Use the Role
+
+Create a playbook that uses the role you've created. For example, create a file named install_nginx.yml:
+
+yaml
+
+---
+- hosts: all #will work on ubuntu only 
+  become: yes
+  roles:
+    - nginx_role
+
+This playbook specifies the target hosts (web_servers) and assigns the nginx_role to those hosts.
+
+Step 5: Run the Playbook
+
+Now, you can run the playbook to install Nginx on the target host(s). Make sure you have SSH access to the target host(s) and that Ansible is correctly configured to access them.
+
+bash
+
+ansible-playbook -i <inventory_file> install_nginx.yml
+
+Replace <inventory_file> with the path to your inventory file, which should contain the IP address or hostname of the target host(s).
+
+Step 6: Verify Nginx Installation
+
+After the playbook has completed successfully, you can verify Nginx's installation and status on the target host(s):
+
+bash
+
+ansible <target_host> -m command -a "nginx -v"  # Check Nginx version
+ansible <target_host> -m systemctl -a "status nginx"  # Check Nginx service status
+
+That's it! You've created a simple Ansible role and used it in a playbook to install and configure Nginx on a remote host. You can expand on this by adding more tasks, variables, and roles to manage various aspects of your infrastructure.

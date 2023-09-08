@@ -1,0 +1,9 @@
+#file location /etc/ansible/hosts or /etc/ansible/ansible_hosts
+
+
+[web_servers]
+webserver1.example.com
+webserver2.example.com
+
+[db_servers]
+dbserver1.example.com

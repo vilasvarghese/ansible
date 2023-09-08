@@ -1,0 +1,67 @@
+---
+- name: Install Tomcat on Ubuntu
+  hosts: all  # Replace with your target host or group
+  become: yes  # Use sudo to execute tasks
+
+  tasks:
+    - name: Update APT package cache
+      apt:
+        update_cache: yes
+      tags:
+        - update
+
+    - name: Install OpenJDK 8 (required for Tomcat)
+      apt:
+        name: openjdk-8-jdk
+        state: present
+      tags:
+        - install
+
+    - name: Download and extract Apache Tomcat
+      get_url:
+        url: https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.54/bin/apache-tomcat-9.0.54.tar.gz
+        dest: /tmp/apache-tomcat-9.0.54.tar.gz
+      tags:
+        - download
+
+    - name: Extract Tomcat archive
+      ansible.builtin.unarchive:
+        src: /tmp/apache-tomcat-9.0.54.tar.gz
+        dest: /opt
+        remote_src: yes
+      tags:
+        - extract
+
+    - name: Create a symbolic link to Tomcat installation
+      file:
+        src: /opt/apache-tomcat-9.0.54
+        dest: /opt/tomcat
+        state: link
+      tags:
+        - link
+
+#     - name: Set environment variables for Tomcat
+#       lineinfile:
+#         path: /etc/environment
+#         line: 'CATALINA_HOME="/opt/tomcat"'
+#         state: present
+#       tags:
+#         - environment
+
+#     - name: Reload environment variables
+#       command: source /etc/environment
+#       args:
+#         executable: /bin/bash
+#       tags:
+#         - environment
+
+#    - name: Start Tomcat service
+#      systemd:
+#        name: tomcat
+#        enabled: yes
+#        state: started
+#      tags:
+        - start
+
+    - name: Start Tomcat service
+      shell: /opt/apache-tomcat-9.0.54/bin/catalina.sh start
