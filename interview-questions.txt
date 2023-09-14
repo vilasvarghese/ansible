@@ -1,0 +1,71 @@
+Certainly! Here are 50 interview questions on Ansible to help you prepare for Ansible-related interviews. These questions cover a range of topics, from basic to more advanced Ansible concepts:
+
+Ansible Basics:
+
+    What is Ansible, and how does it differ from other configuration management tools?
+    Explain the key components of Ansible.
+    What are Ansible playbooks and roles?
+    How do you install Ansible on a Linux system?
+    What is an Ansible inventory, and how is it structured?
+    How can you execute ad-hoc commands with Ansible?
+
+Ansible Playbooks and Roles:
+
+    Describe the structure of an Ansible playbook.
+    What is the purpose of the hosts keyword in a playbook?
+    How do you include a task from another playbook?
+    What is the role in Ansible, and how is it structured?
+    How can you pass variables to Ansible playbooks and roles?
+    Explain the difference between handlers and tasks in a role.
+
+Ansible Modules:
+
+    What is an Ansible module, and why are they important?
+    Give examples of some common Ansible modules.
+    How do you use the command module, and when is it preferred over others?
+    Explain the usage of the copy module.
+    What is the purpose of the template module in Ansible?
+
+Inventory and Dynamic Inventory:
+
+    How can you define hosts in an Ansible inventory file?
+    What is dynamic inventory in Ansible?
+    Name a few tools that can be used to generate dynamic inventories.
+    How can you use dynamic inventory with cloud providers like AWS?
+
+Ansible Variables and Facts:
+
+    What are Ansible variables and how do you define them?
+    Explain the difference between variable precedence (e.g., playbook vars vs. role vars).
+    How can you access system-related information using Ansible facts?
+    What is the purpose of the gather_facts directive in a playbook?
+
+Handlers and Callbacks:
+
+    What are handlers in Ansible and when are they executed?
+    How do you notify a handler to run after a task?
+    What are Ansible callbacks, and how can you use them?
+
+Conditionals and Loops:
+
+    How do you use conditional statements in Ansible playbooks?
+    Explain the use of the when keyword in Ansible tasks.
+    What looping mechanisms are available in Ansible, and when would you use them?
+
+Ansible Vault:
+
+    What is Ansible Vault, and why is it used?
+    How do you encrypt and decrypt files using Ansible Vault?
+    How can you use Ansible Vault to protect sensitive data in playbooks?
+
+Roles and Dependencies:
+
+    How do you create and organize reusable roles in Ansible?
+    What are role dependencies, and how can you define them?
+    How do you manage role dependencies in an Ansible playbook?
+
+Ansible Best Practices:
+
+    Name some best practices for writing efficient and maintainable Ansible code.
+    How can you perform idempotent tasks in Ansible?
+    What is the role of documentation in Ansible playbooks and roles?

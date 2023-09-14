@@ -84,6 +84,7 @@ ansible [-i <inventory>] host:group1:group2 -m module [-a arguments]
 		b. change ownership and permissions on files.   
 			$ ansible webservers -m file -a "dest=/srv/foo/a.txt mode=600"  
 			$ ansible webservers -m file -a "dest=/srv/foo/b.txt mode=600 owner=vilas group=dev"  
+			-> ansible <target_host> -i inventory -m apt -a "name=apache2 state=present" -u <your_ssh_username>
 
 10. Get a file from remote machine.(e.g. logfile)  
 	ansible node1 -m fetch -a 'src=/etc/abc/xyz.log dest=/home/vilas/example/ flat=yes'  
